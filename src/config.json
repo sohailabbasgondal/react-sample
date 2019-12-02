@@ -1,0 +1,5 @@
+{
+  "apiEndPoint": "http://laravel.local/api/v1",
+  "apiAuthEndPoint": "http://laravel.local/api/auth",
+  "appUrl": "http://localhost:3000"
+}
