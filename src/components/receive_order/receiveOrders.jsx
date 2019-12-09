@@ -1,30 +1,17 @@
 import React, { Component } from "react";
-import { getItems, deleteItem } from "../../services/itemService";
+import { getReceiveOrders } from "../../services/orderService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
-import SupplierItemsTable from "./supplierItemsTable";
+import ReceiveOrdersTable from "./receiveOrdersTable";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import _ from "lodash";
 import BlockUi from "react-block-ui";
 import TableTitle from "../common/tableTitle";
-import {
-  Table,
-  Confirm,
-  Grid,
-  Card,
-  Form,
-  Button,
-  Label,
-  Statistic
-} from "semantic-ui-react";
+import { Table, Confirm, Grid } from "semantic-ui-react";
 import Input from "../common/input";
 import Select from "../common/select";
-
-import { getCategories } from "../../services/categoryService";
-// import Form from "../common/form";
 import { getSuppliers } from "../../services/supplierService";
-import { getStorageAreas } from "../../services/storageAreaService";
 import {
   getOrderItems,
   deleteOrderItem,
@@ -37,12 +24,11 @@ import Counter from "../order/counter";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-class SupplierItems extends Component {
+class ReceiveOrders extends Component {
   state = {
     startDate: new Date(),
-    items: [],
+    orders: [],
     item: "",
-    orderItems: getOrderItems(),
 
     open: false,
     pageSize: 10,
@@ -50,35 +36,23 @@ class SupplierItems extends Component {
 
     sortColumn: { path: "title", order: "asc" },
     noRecordFound: "",
-    categories: [],
     suppliers: [],
-    storage_areas: [],
 
     keyFieldValue: "",
-    category_id: "",
-    supplier_id: "",
-    storage_area_id: ""
+    supplier_id: ""
   };
 
   async componentDidMount() {
-    const { data: cats } = await getCategories();
-    const categories = [{ id: "", name: "All Categories" }, ...cats];
-
     const { data: supps } = await getSuppliers();
     const suppliers = [{ id: "", name: "All Suppliers" }, ...supps];
 
-    const { data: areas } = await getStorageAreas();
-    const storage_areas = [{ id: "", name: "All Storage Areas" }, ...areas];
-
     this.setState({ blocking: true });
-    const { data: items } = await getItems();
+    const { data: orders } = await getReceiveOrders();
     this.state.blocking = false;
     this.setState({
-      items,
+      orders,
       blocking: false,
-      categories,
-      suppliers,
-      storage_areas
+      suppliers
     });
   }
 
@@ -97,7 +71,7 @@ class SupplierItems extends Component {
     this.setState({ items });
 
     try {
-      await deleteItem(item.id);
+      //await deleteItem(item.id);
       toast.success("Item has been updated successfully.");
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
@@ -116,12 +90,10 @@ class SupplierItems extends Component {
     this.setState({ currentPage: page });
   };
 
-  handleSearching = (keyword, category_id, supplier_id, storage_area_id) => {
+  handleSearching = (keyword, supplier_id) => {
     this.setState({
       keyFieldValue: keyword,
-      category_id,
       supplier_id,
-      storage_area_id,
       currentPage: 1
     });
   };
@@ -134,120 +106,49 @@ class SupplierItems extends Component {
     const {
       pageSize,
       currentPage,
-      items: allItems,
+      orders: allOrders,
       sortColumn,
       keyFieldValue,
-      category_id,
-      supplier_id,
-      storage_area_id
+      supplier_id
     } = this.state;
 
-    let filtered = allItems;
-
-    console.log(keyFieldValue + "==" + category_id);
+    let filtered = allOrders;
 
     filtered = keyFieldValue
-      ? allItems.filter(
-          m => m.name.toUpperCase().indexOf(keyFieldValue.toUpperCase()) > -1
-        )
-      : filtered;
-
-    filtered = category_id
-      ? filtered.filter(m => m.category.id == category_id)
+      ? allOrders.filter(m => m.outlet_order_counter == keyFieldValue)
       : filtered;
 
     filtered = supplier_id
       ? filtered.filter(m => m.supplier.id == supplier_id)
       : filtered;
 
-    filtered = storage_area_id
-      ? filtered.filter(m => m.storage_area.id == storage_area_id)
-      : filtered;
-
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
-    const items = paginate(sorted, currentPage, pageSize);
-    return { totalCount: filtered.length, data: items };
+    const orders = paginate(sorted, currentPage, pageSize);
+    return { totalCount: filtered.length, data: orders };
   };
+
   clearFilters() {
     document.getElementById("keyword").value = "";
-    document.getElementById("category_id").value = "";
     document.getElementById("supplier_id").value = "";
-    document.getElementById("storage_area_id").value = "";
     this.setState({
-      data: { category_id: "", storage_area_id: "", supplier_id: "" }
+      data: { supplier_id: "" }
     });
     document.getElementById("searcBtn").click();
   }
 
-  handleOrderItemDelete = id => {
-    deleteOrderItem(id);
-    this.loadOrderItems();
-  };
-
-  handleOrderItemUpdate = (qty, total, id) => {
-    const item = { qty: qty, total: total, id: id };
-    saveOrderItem(item);
-    this.loadOrderItems();
-  };
-
-  cardVisibility() {
-    if (this.state.orderItems.length === 0) return "none";
-    return "block";
-  }
-
-  saveOrder = async () => {
-    this.setState({ blocking: true });
-
-    let data = {
-      order_delivery_date: this.state.startDate,
-      message: document.getElementById("message").value,
-      items: this.state.orderItems
-    };
-
-    await saveOrderToServer(data);
-
-    this.setState({ blocking: false });
-    toast.success("Order has been placed successfully.");
-    deleteAllOrderItem();
-    this.loadOrderItems();
-  };
-
-  handleIncrement = item => {
-    item.decrement = 0;
-    saveOrderItem(item);
-    this.loadOrderItems();
-  };
-
-  loadOrderItems() {
-    const orderItems = getOrderItems();
-    this.setState({ orderItems });
-  }
-
-  handleDecrement = item => {
-    item.decrement = 1;
-    saveOrderItem(item);
-    this.loadOrderItems();
-  };
-
-  handleChange = date => {
-    this.setState({
-      startDate: date
-    });
-  };
-
   render() {
     const { pageSize, currentPage, sortColumn } = this.state;
-    const { totalCount, data: items } = this.getPagedData();
-    const { length: count } = items.length;
-    if (count === 0) return <p>There are no items in the store.</p>;
+    const { totalCount, data: orders } = this.getPagedData();
+    const { length: count } = orders.length;
+    if (count === 0) return <p>There are no orders in the store.</p>;
 
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Confirm
           open={this.state.open}
           header="Confirmation"
-          content="Are you sure, you want to delete the item?"
+          content="Are you sure, you want to delete the order?"
           onCancel={this.handleCancel}
           onConfirm={this.doDelete}
           size="mini"
@@ -255,7 +156,7 @@ class SupplierItems extends Component {
 
         <Grid>
           <Grid.Column width={16} style={{ paddingBottom: 0 }}>
-            <TableTitle title="Items" icon="tag" />
+            <TableTitle title="Receive orders to inventory" icon="tag" />
             <Table>
               <Table.Body>
                 <Table.Row>
@@ -278,13 +179,7 @@ class SupplierItems extends Component {
                               placeholder="Search by keyword"
                             />
                           </Table.Cell>
-                          <Table.Cell>
-                            <Select
-                              name="category_id"
-                              id="category_id"
-                              options={this.state.categories}
-                            />
-                          </Table.Cell>
+
                           <Table.Cell>
                             <Select
                               name="supplier_id"
@@ -292,22 +187,13 @@ class SupplierItems extends Component {
                               options={this.state.suppliers}
                             />
                           </Table.Cell>
-                          <Table.Cell>
-                            <Select
-                              name="storage_area_id"
-                              id="storage_area_id"
-                              options={this.state.storage_areas}
-                            />
-                          </Table.Cell>
+
                           <Table.Cell>
                             <button
                               onClick={() =>
                                 this.handleSearching(
                                   document.getElementById("keyword").value,
-                                  document.getElementById("category_id").value,
-                                  document.getElementById("supplier_id").value,
-                                  document.getElementById("storage_area_id")
-                                    .value
+                                  document.getElementById("supplier_id").value
                                 )
                               }
                               id="searcBtn"
@@ -337,14 +223,14 @@ class SupplierItems extends Component {
                 </Table.Row>
               </Table.Body>
             </Table>
-            <p>Showing {totalCount} items.</p>
+            <p>Showing {totalCount} orders.</p>
           </Grid.Column>
         </Grid>
 
         <Grid>
-          <Grid.Column width={11}>
-            <SupplierItemsTable
-              items={items}
+          <Grid.Column width={16}>
+            <ReceiveOrdersTable
+              orders={orders}
               sortColumn={sortColumn}
               onDelete={this.handleDelete}
               onUpdate={this.handleUpdate}
@@ -359,60 +245,10 @@ class SupplierItems extends Component {
               currentPage={currentPage}
             />
           </Grid.Column>
-          <Grid.Column width={5}>
-            <Card style={{ display: this.cardVisibility(), width: "100%" }}>
-              <Card.Content>
-                <Card.Header>
-                  Order Detail
-                  <Label circular color="blue" floating>
-                    {this.state.orderItems.length}
-                  </Label>
-                </Card.Header>
-              </Card.Content>
-              <Card.Content>
-                <Table>
-                  <Table.Body>
-                    {this.state.orderItems.map(item => (
-                      <Counter
-                        item={item}
-                        key={item.id}
-                        onDelete={this.handleOrderItemDelete}
-                        onUpdate={this.handleOrderItemUpdate}
-                        onIncrement={this.handleIncrement}
-                        onDecrement={this.handleDecrement}
-                      />
-                    ))}
-                  </Table.Body>
-                </Table>
-
-                <Form>
-                  <Form.TextArea id="message" label="Message" />
-                  <div className="field">
-                    <label>Delivery date</label>
-                    <DatePicker
-                      selected={this.state.startDate}
-                      onChange={this.handleChange}
-                    />
-                  </div>
-
-                  <Statistic color="green" size="tiny">
-                    <Statistic.Value>${getOrderTotal()}</Statistic.Value>
-                    <Statistic.Label>Order</Statistic.Label>
-                  </Statistic>
-
-                  <br />
-                  <Button secondary>Cancel</Button>
-                  <Button primary onClick={this.saveOrder}>
-                    Send
-                  </Button>
-                </Form>
-              </Card.Content>
-            </Card>
-          </Grid.Column>
         </Grid>
       </BlockUi>
     );
   }
 }
 
-export default SupplierItems;
+export default ReceiveOrders;

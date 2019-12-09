@@ -8,6 +8,12 @@ function orderStoreUrl(id) {
   else return `/outlet/${auth.getCurrentUser().outlet_id}/orders`;
 }
 
+function receiveOrderStoreUrl(id) {
+  if (id)
+    return `/outlet/${auth.getCurrentUser().outlet_id}/receive-orders/${id}`;
+  else return `/outlet/${auth.getCurrentUser().outlet_id}/receive-orders`;
+}
+
 export function getOrderItems() {
   return orderItems;
 }
@@ -23,10 +29,6 @@ export function getOrderTotal() {
   return order;
 }
 
-export function saveOrderToServer(data) {
-  return http.post(orderStoreUrl(), data);
-}
-
 export function saveOrderItem(item) {
   let itemInDb = orderItems.find(m => m.id === item.id) || {};
 
@@ -34,6 +36,7 @@ export function saveOrderItem(item) {
     itemInDb.id = item.id;
     itemInDb.qty = 1;
     itemInDb.title = item.name;
+    itemInDb.supplier_id = item.supplier.id;
     itemInDb.price = item.price;
     itemInDb.total = item.price;
     orderItems.push(itemInDb);
@@ -59,4 +62,25 @@ export function deleteOrderItem(id) {
   let itemInDb = orderItems.find(m => m.id === id);
   orderItems.splice(orderItems.indexOf(itemInDb), 1);
   return itemInDb;
+}
+
+export function deleteAllOrderItem() {
+  orderItems.length = 0;
+}
+
+/* Server calls*/
+export function saveOrderToServer(data) {
+  return http.post(orderStoreUrl(), data);
+}
+
+export function getOrders() {
+  return http.get(orderStoreUrl());
+}
+
+export function getOrderDetails($id) {
+  return http.get(orderStoreUrl($id));
+}
+
+export function getReceiveOrders() {
+  return http.get(receiveOrderStoreUrl());
 }

@@ -41,21 +41,40 @@ const Navigation = ({ user }) => {
                 Storage areas
               </NavLink>
             </Menu.Item>
-            <Menu.Item>
-              <NavLink className="nav-item nav-link" to="/categories">
-                Categories
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item>
-              <NavLink className="nav-item nav-link" to="/items">
-                Items
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item>
-              <NavLink className="nav-item nav-link" to="/orders">
-                Orders
-              </NavLink>
-            </Menu.Item>
+
+            <Dropdown item simple text="Inventory">
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/categories">
+                    Categories
+                  </NavLink>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/items">
+                    Items
+                  </NavLink>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown item simple text="Orders">
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/items">
+                    Place orders
+                  </NavLink>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/orders">
+                    Orders history
+                  </NavLink>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/receive-orders">
+                    Receive orders
+                  </NavLink>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
             <Dropdown item simple text="POS">
               <Dropdown.Menu>
                 <Dropdown.Item>
@@ -63,7 +82,6 @@ const Navigation = ({ user }) => {
                     Menu types
                   </NavLink>
                 </Dropdown.Item>
-                <Dropdown.Divider />
                 <Dropdown.Item>
                   <NavLink style={{ color: "#000" }} to="/menu-items">
                     Menu items

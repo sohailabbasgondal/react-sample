@@ -4,6 +4,7 @@ import Form from "./common/form";
 import auth from "../services/authService";
 import { Redirect } from "react-router-dom";
 import BlockUi from "react-block-ui";
+import { Table, Grid } from "semantic-ui-react";
 
 class LoginForm extends Form {
   state = {
@@ -46,14 +47,46 @@ class LoginForm extends Form {
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <center>
-          <form className="form-signin col-md-4" onSubmit={this.handleSubmit}>
-            <img height="70" src={logoUrl} />
-            <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-            {this.renderInput("username", "Username", "text")}
-            {this.renderInput("password", "Password", "password")}
+          <form className="ui form" onSubmit={this.handleSubmit}>
+            <Grid>
+              <Grid.Row>
+                <Grid.Column width={5}></Grid.Column>
+                <Grid.Column width={6}>
+                  <img height="70" src={logoUrl} />
+                </Grid.Column>
+                <Grid.Column width={5}></Grid.Column>
+              </Grid.Row>
+              <Grid.Row>
+                <Grid.Column width={5}></Grid.Column>
+                <Grid.Column width={6}>
+                  <Table size="small">
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.HeaderCell colspan="2">Login</Table.HeaderCell>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      <Table.Row width="8">
+                        <Table.Cell>
+                          {this.renderInput("username", "Username", "text")}
+                        </Table.Cell>
+                      </Table.Row>
 
-            {this.renderButton("Login")}
-            <p className="mt-5 mb-3 text-muted">©xoomics 2019-2020</p>
+                      <Table.Row width="8">
+                        <Table.Cell>
+                          {this.renderInput("password", "Password", "password")}
+                        </Table.Cell>
+                      </Table.Row>
+
+                      <Table.Row>
+                        <Table.Cell>{this.renderButton("Login")}</Table.Cell>
+                      </Table.Row>
+                    </Table.Body>
+                  </Table>
+                </Grid.Column>
+                <Grid.Column width={5}></Grid.Column>
+              </Grid.Row>
+            </Grid>
           </form>
         </center>
       </BlockUi>

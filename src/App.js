@@ -38,6 +38,11 @@ import MenuItems from "./components/menu_item/menuItems";
 import MenuItemForm from "./components/menu_item/menuItemForm";
 import MenuItemEditForm from "./components/menu_item/menuItemEditForm";
 
+import SupplierOrders from "./components/supplier_order/supplierOrders";
+import SupplierOrderDetail from "./components/supplier_order/supplierOrderDetail";
+import ReceiveOrders from "./components/receive_order/receiveOrders";
+import ReceiveOrderDetail from "./components/receive_order/receiveOrderDetail";
+
 import Recipes from "./components/recipe/recipes";
 
 import { ToastContainer } from "react-toastify";
@@ -66,15 +71,12 @@ class App extends Component {
         <Container style={{ marginTop: "5em", width: "96%" }}>
           <Switch>
             <ProtectedRoute path="/dashboard" component={Dashboard} />
-
             {/* menu items recipes */}
-
             <ProtectedRoute
               exact
               path="/menu-items/:id/recipe"
               component={Recipes}
             />
-
             {/* Outlets routes */}
             <ProtectedRoute exact path="/outlets/:id" component={OutletForm} />
             <ProtectedRoute
@@ -92,7 +94,6 @@ class App extends Component {
               component={OutletEditManagerForm}
             />
             <ProtectedRoute component={Outlets} path="/outlets" />
-
             {/* Suppliers routes */}
             <ProtectedRoute
               exact
@@ -103,11 +104,8 @@ class App extends Component {
               path="/suppliers/:id/edit"
               component={SupplierEditForm}
             />
-
             <ProtectedRoute path="/suppliers" component={Suppliers} />
-
             {/* storage areas */}
-
             <ProtectedRoute
               exact
               path="/storage-areas/:id"
@@ -117,11 +115,8 @@ class App extends Component {
               path="/storage-areas/:id/edit"
               component={StorageAreaEditForm}
             />
-
             <ProtectedRoute path="/storage-areas" component={StorageAreas} />
-
             {/* categories */}
-
             <ProtectedRoute
               exact
               path="/categories/:id"
@@ -131,11 +126,8 @@ class App extends Component {
               path="/categories/:id/edit"
               component={CategoryEditForm}
             />
-
             <ProtectedRoute path="/categories" component={Categories} />
-
             {/* items */}
-
             <ProtectedRoute
               exact
               path="/items/:id"
@@ -146,17 +138,13 @@ class App extends Component {
               path="/items/:id/edit"
               component={SupplierItemEditForm}
             />
-
             <ProtectedRoute
               exact
               path="/items/view/:id"
               component={SupplierItemDetail}
             />
-
             <ProtectedRoute exact path="/items" component={SupplierItems} />
-
             {/* menu tyes */}
-
             <ProtectedRoute
               exact
               path="/menu-types/:id"
@@ -166,11 +154,8 @@ class App extends Component {
               path="/menu-types/:id/edit"
               component={MenuTypeEditForm}
             />
-
             <ProtectedRoute path="/menu-types" component={MenuTypes} />
-
             {/* menu items */}
-
             <ProtectedRoute
               exact
               path="/menu-items/:id"
@@ -180,10 +165,17 @@ class App extends Component {
               path="/menu-items/:id/edit"
               component={MenuItemEditForm}
             />
-
             <ProtectedRoute path="/menu-items" component={MenuItems} />
-
-            <ProtectedRoute path="/orders" component={Orders} />
+            <ProtectedRoute
+              path="/orders/view/:id"
+              component={SupplierOrderDetail}
+            />
+            <ProtectedRoute path="/orders" component={SupplierOrders} />
+            <ProtectedRoute
+              path="/receive-orders/view/:id"
+              component={ReceiveOrderDetail}
+            />
+            <ProtectedRoute path="/receive-orders" component={ReceiveOrders} />
             <Route path="/login" component={LoginForm} />
             <Route path="/logout" component={Logout} />
             <Route path="/not-found" component={NotFound} />
