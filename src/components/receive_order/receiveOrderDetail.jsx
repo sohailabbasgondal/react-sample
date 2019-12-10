@@ -14,6 +14,16 @@ class ReceiveOrderDetail extends Component {
         >
           Back
         </Button>
+        <Button
+          className="ui primary button"
+          onClick={() =>
+            this.props.history.push(
+              `/receive-orders/invoice/${this.props.match.params.id}`
+            )
+          }
+        >
+          Receive order
+        </Button>
 
         <OrderDetail id={this.props.match.params.id} />
       </div>

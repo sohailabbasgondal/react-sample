@@ -42,6 +42,7 @@ import SupplierOrders from "./components/supplier_order/supplierOrders";
 import SupplierOrderDetail from "./components/supplier_order/supplierOrderDetail";
 import ReceiveOrders from "./components/receive_order/receiveOrders";
 import ReceiveOrderDetail from "./components/receive_order/receiveOrderDetail";
+import InvoiceOrder from "./components/receive_order/invoiceOrder";
 
 import Recipes from "./components/recipe/recipes";
 
@@ -171,6 +172,11 @@ class App extends Component {
               component={SupplierOrderDetail}
             />
             <ProtectedRoute path="/orders" component={SupplierOrders} />
+
+            <ProtectedRoute
+              path="/receive-orders/invoice/:id"
+              component={InvoiceOrder}
+            />
             <ProtectedRoute
               path="/receive-orders/view/:id"
               component={ReceiveOrderDetail}
