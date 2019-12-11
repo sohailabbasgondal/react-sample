@@ -45,7 +45,7 @@ class InvoiceOrderItem extends Component {
             style={{ width: "100px" }}
           />
         </Table.Cell>
-        <Table.Cell>{Number(price * qty)}</Table.Cell>
+        <Table.Cell>{Number(price * received)}</Table.Cell>
         <Table.Cell>
           <Input
             id={inputId}

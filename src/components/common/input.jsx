@@ -5,7 +5,9 @@ const Input = ({ name, label, error, ...rest }) => {
     <div className="field">
       <label>{label}</label>
       <input {...rest} id={name} name={name} className="form-control" />
-      {error && <div class="ui error pointing top prompt label">{error}</div>}
+      {error && (
+        <div className="ui error pointing top prompt label">{error}</div>
+      )}
     </div>
   );
 };

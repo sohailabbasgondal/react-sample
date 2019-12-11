@@ -143,7 +143,7 @@ class OrderDetail extends Component {
 
           <Table.Body>
             {this.state.order.total_items.map(item => (
-              <Table.Row>
+              <Table.Row key={item.id}>
                 <Table.Cell>{item.item.name}</Table.Cell>
                 <Table.Cell>{item.item.unit.name}</Table.Cell>
                 <Table.Cell>{item.item.code}</Table.Cell>

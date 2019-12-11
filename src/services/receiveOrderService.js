@@ -2,6 +2,7 @@ import http from "./httpService";
 import auth from "./authService";
 
 const receivedOrderItems = [];
+const deletedItems = [];
 
 // order items functions
 export function saveOrderItems(item) {
@@ -45,4 +46,17 @@ export function deleteOrderItem(id) {
   let itemInDb = receivedOrderItems.find(m => m.id === id);
   receivedOrderItems.splice(receivedOrderItems.indexOf(itemInDb), 1);
   return itemInDb;
+}
+
+/* deleted items functions  */
+export function saveDeletedItems(id) {
+  let itemInDb = deletedItems.find(m => m.id === id) || {};
+  if (!itemInDb.id) {
+    itemInDb.id = id;
+    deletedItems.push(itemInDb);
+    return itemInDb;
+  }
+}
+export function getDeletedItems() {
+  return deletedItems;
 }

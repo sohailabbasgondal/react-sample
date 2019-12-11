@@ -80,6 +80,17 @@ class Form extends Component {
       />
     );
   }
+
+  renderTextarea(name, label, type = "text") {
+    const { data } = this.state;
+    return (
+      <textarea
+        name={name}
+        value={data[name]}
+        onChange={this.handleChange}
+      ></textarea>
+    );
+  }
 }
 
 export default Form;

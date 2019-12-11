@@ -84,3 +84,7 @@ export function getOrderDetails($id) {
 export function getReceiveOrders() {
   return http.get(receiveOrderStoreUrl());
 }
+
+export function updateOrderToServer(data) {
+  return http.put(orderStoreUrl(data.orderId), data);
+}

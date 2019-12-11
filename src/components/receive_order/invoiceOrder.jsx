@@ -1,14 +1,27 @@
 import React, { Component } from "react";
-import { getOrderDetails } from "../../services/orderService";
-import { Table, Grid, Button, Input } from "semantic-ui-react";
+import {
+  getOrderDetails,
+  updateOrderToServer
+} from "../../services/orderService";
+import {
+  Table,
+  Grid,
+  Button,
+  Segment,
+  Portal,
+  Header
+} from "semantic-ui-react";
 import BlockUi from "react-block-ui";
 import TableTitle from "../common/tableTitle";
 import InvoiceOrderItem from "./invoiceOrderItem";
+import { toast } from "react-toastify";
 import {
   saveOrderItems,
   getReceivedOrderItems,
   updateOrderItem,
-  deleteOrderItem
+  deleteOrderItem,
+  saveDeletedItems,
+  getDeletedItems
 } from "../../services/receiveOrderService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,13 +32,19 @@ class InvoiceOrder extends Form {
   state = {
     order: { supplier: {}, total_items: [] },
     receivedOrder: [],
+    deletedItems: [],
     invoiceDate: new Date(),
     data: {
       invoiceId: "",
       tax: "",
-      shipping: ""
+      shipping: "",
+      total: "",
+      comments: ""
     },
-    errors: {}
+    errors: {},
+    items_total: 0,
+    open: false,
+    portal_message: ""
   };
 
   schema = {
@@ -37,9 +56,20 @@ class InvoiceOrder extends Form {
       .label("Tax"),
     shipping: Joi.number()
       .required()
-      .label("Shipping")
+      .label("Shipping"),
+    total: Joi.number()
+      .required()
+      .label("Total"),
+    comments: Joi.string().label("Comments")
   };
 
+  calculateItemsTotal = () => {
+    let total = 0;
+    this.state.receivedOrder.map(item => {
+      total = total + Number(item.price * item.received);
+    });
+    this.setState({ items_total: total });
+  };
   async getOrderDetail() {
     try {
       this.setState({ blocking: true });
@@ -58,6 +88,7 @@ class InvoiceOrder extends Form {
 
   async componentDidMount() {
     await this.getOrderDetail();
+    this.calculateItemsTotal();
     this.setState({ blocking: false });
   }
 
@@ -75,25 +106,85 @@ class InvoiceOrder extends Form {
   handleDelete = item => {
     deleteOrderItem(item);
     this.loadOrderItems();
+    saveDeletedItems(item);
+    this.loadDeletedItems();
   };
 
   handleQtyUpdate = (itemId, val) => {
     updateOrderItem(itemId, val, "qty");
+    this.calculateItemsTotal();
     this.loadOrderItems();
   };
 
   handlePriceUpdate = (itemId, val) => {
     updateOrderItem(itemId, val, "price");
+    this.calculateItemsTotal();
     this.loadOrderItems();
   };
+
+  loadDeletedItems() {
+    const deletedItems = getDeletedItems();
+    this.setState({ deletedItems });
+  }
 
   loadOrderItems() {
     const receivedOrder = getReceivedOrderItems();
     this.setState({ receivedOrder });
   }
 
-  doSubmit = () => {
-    console.log(this.state.receivedOrder);
+  doSubmit = async () => {
+    let verifyConfirmed = 1;
+    this.state.receivedOrder.map(item => {
+      if (item.confirmed === 0) {
+        verifyConfirmed = 0;
+      }
+    });
+    if (verifyConfirmed === 0) {
+      this.handleOpen(
+        'Please confirm all items, using "Confirm" checkbox available for each item.'
+      );
+      return false;
+    }
+
+    if (this.state.items_total != this.state.data.total) {
+      this.handleOpen(
+        'Please be sure, your entered correct value in "Total as below" field.'
+      );
+      return false;
+    }
+
+    //processing submit
+    const { invoiceId, tax, shipping, total, comments } = this.state.data;
+    let data = {
+      doc_invoice_number: invoiceId,
+      doc_invoice_date: this.state.invoiceDate,
+      tax: tax,
+      shipping: shipping,
+      total: total,
+      comments: comments,
+      order: this.state.receivedOrder,
+      orderId: this.props.match.params.id,
+      deleted_items: this.state.deletedItems
+    };
+
+    try {
+      this.setState({ blocking: true });
+      await updateOrderToServer(data);
+      this.setState({ blocking: false });
+      toast.success("Order has been added to inventory successfully.");
+      this.props.history.push("/receive-orders");
+    } catch (ex) {
+      console.log(ex.response);
+      if (ex.response && ex.response.status === 422) {
+        const errors = { ...this.state.errors };
+
+        if (ex.response.data.errors.name)
+          errors.name = ex.response.data.errors.name;
+
+        this.setState({ errors, blocking: false });
+        //toast.warning("check validation errors.");
+      }
+    }
   };
 
   reloadScreen() {
@@ -106,23 +197,8 @@ class InvoiceOrder extends Form {
     });
   };
 
-  handleInvoice = val => {
-    this.setState({
-      invoiceId: val.value
-    });
-  };
-
-  handleTax = val => {
-    this.setState({
-      tax: val.value
-    });
-  };
-
-  handleShipping = val => {
-    this.setState({
-      shipping: val.value
-    });
-  };
+  handleClose = () => this.setState({ open: false });
+  handleOpen = msg => this.setState({ open: true, portal_message: msg });
 
   render() {
     let pageHeader = `${this.state.order.supplier.name} Invoice`;
@@ -154,6 +230,25 @@ class InvoiceOrder extends Form {
 
               <Grid.Column width={4} style={{ textAlign: "right" }}>
                 {this.renderButton("Confirm Order")}
+                <Portal onClose={this.handleClose} open={this.state.open}>
+                  <Segment
+                    style={{
+                      left: "40%",
+                      position: "fixed",
+                      top: "50%",
+                      zIndex: 1000
+                    }}
+                  >
+                    <Header>Warning</Header>
+                    <p>{this.state.portal_message}</p>
+
+                    <Button
+                      content="Close"
+                      negative
+                      onClick={this.handleClose}
+                    />
+                  </Segment>
+                </Portal>
               </Grid.Column>
             </Grid.Row>
           </Grid>
@@ -178,8 +273,10 @@ class InvoiceOrder extends Form {
                       </Table.Cell>
                     </Table.Row>
                     <Table.Row>
-                      <Table.Cell width={4}>Total</Table.Cell>
-                      <Table.Cell></Table.Cell>
+                      <Table.Cell width={4}>Total as below</Table.Cell>
+                      <Table.Cell>
+                        {this.renderInput("total", "", "text")}
+                      </Table.Cell>
                     </Table.Row>
                   </Table.Body>
                 </Table>
@@ -234,6 +331,42 @@ class InvoiceOrder extends Form {
             ))}
           </Table.Body>
         </Table>
+        <Grid columns={2} style={{ marginTop: "0px" }}>
+          <Grid.Row>
+            <Grid.Column width={11} className="form ui">
+              {/* <textarea
+                name="comments"
+                value={this.state.comments}
+                onChange={this.handleComments}
+                style={{ width: "100%", height: "100%" }}
+                cols="100"
+              ></textarea> */}
+              {this.renderTextarea("comments", "", "text")}
+            </Grid.Column>
+            <Grid.Column width={5}>
+              <Table definition>
+                <Table.Body>
+                  <Table.Row>
+                    <Table.Cell width={4}>Items total</Table.Cell>
+                    <Table.Cell>{this.state.items_total}</Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                    <Table.Cell width={4}>Total items</Table.Cell>
+                    <Table.Cell>{this.state.receivedOrder.length}</Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                    <Table.Cell width={4}>Discount</Table.Cell>
+                    <Table.Cell>0</Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                    <Table.Cell width={4}>Sub total</Table.Cell>
+                    <Table.Cell>{this.state.items_total}</Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              </Table>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </BlockUi>
     );
   }
