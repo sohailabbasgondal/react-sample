@@ -6,12 +6,24 @@ import { Icon } from "semantic-ui-react";
 class MenuItemsTable extends Component {
   columns = [
     {
+      path: "thumbnail",
+      label: "Thumbnail",
+      width: "1",
+      content: menuItem => (
+        <div>
+          <img width="50" src={menuItem.thumbnail} />
+        </div>
+      )
+    },
+    {
       path: "name",
       label: "Name",
-      width: "10"
-      //   content: supplier => (
-      //     <Link to={`/suppliers/view/${supplier.id}`}>{supplier.name}</Link>
-      //   )
+      width: "7"
+    },
+    {
+      path: "price",
+      label: "Price",
+      width: "2"
     },
     { path: "status", label: "Status", width: "2" },
     { path: "createdDate", label: "Created date", width: "2" },

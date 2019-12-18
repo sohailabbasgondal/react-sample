@@ -13,10 +13,19 @@ const Navigation = ({ user }) => {
             style={{ marginRight: "1.5em", height: "30px" }}
           />
         </Menu.Item>
+
         {user && (
           <Menu.Item>
             <NavLink className="nav-item nav-link" to="/dashboard">
               Dashboard
+            </NavLink>
+          </Menu.Item>
+        )}
+
+        {user && user.user_type === "cashier" && (
+          <Menu.Item>
+            <NavLink className="nav-item nav-link" to="/pos-terminal">
+              POS terminal
             </NavLink>
           </Menu.Item>
         )}
@@ -36,14 +45,14 @@ const Navigation = ({ user }) => {
                 Suppliers
               </NavLink>
             </Menu.Item>
-            <Menu.Item>
-              <NavLink className="nav-item nav-link" to="/storage-areas">
-                Storage areas
-              </NavLink>
-            </Menu.Item>
 
             <Dropdown item simple text="Inventory">
               <Dropdown.Menu>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/storage-areas">
+                    Storage areas
+                  </NavLink>
+                </Dropdown.Item>
                 <Dropdown.Item>
                   <NavLink style={{ color: "#000" }} to="/categories">
                     Categories
@@ -59,22 +68,40 @@ const Navigation = ({ user }) => {
             <Dropdown item simple text="Orders">
               <Dropdown.Menu>
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/items">
-                    Place orders
-                  </NavLink>
+                  <i className="dropdown icon" />
+                  <span className="text">Suppliers</span>
+                  <Dropdown.Menu>
+                    <Dropdown.Item>
+                      <NavLink style={{ color: "#000" }} to="/items">
+                        Place orders
+                      </NavLink>
+                    </Dropdown.Item>
+                    <Dropdown.Item>
+                      <NavLink style={{ color: "#000" }} to="/orders">
+                        Orders history
+                      </NavLink>
+                    </Dropdown.Item>
+                    <Dropdown.Item>
+                      <NavLink style={{ color: "#000" }} to="/receive-orders">
+                        Receive orders
+                      </NavLink>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/orders">
-                    Orders history
-                  </NavLink>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/receive-orders">
-                    Receive orders
-                  </NavLink>
+                  <i className="dropdown icon" />
+                  <span className="text">Cashiers</span>
+                  <Dropdown.Menu>
+                    <Dropdown.Item>
+                      <NavLink style={{ color: "#000" }} to="/cashiers-orders">
+                        Orders history
+                      </NavLink>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+
             <Dropdown item simple text="POS">
               <Dropdown.Menu>
                 <Dropdown.Item>
@@ -85,6 +112,15 @@ const Navigation = ({ user }) => {
                 <Dropdown.Item>
                   <NavLink style={{ color: "#000" }} to="/menu-items">
                     Menu items
+                  </NavLink>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown item simple text="Users">
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/cashiers">
+                    Cashiers
                   </NavLink>
                 </Dropdown.Item>
               </Dropdown.Menu>

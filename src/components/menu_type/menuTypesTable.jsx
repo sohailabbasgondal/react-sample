@@ -6,9 +6,27 @@ import { Icon } from "semantic-ui-react";
 class MenuTypesTable extends Component {
   columns = [
     {
+      path: "thumbnail",
+      label: "Thumbnail",
+      width: "1",
+      content: menuType => (
+        <div>
+          <img width="50" src={menuType.thumbnail} />
+        </div>
+      )
+    },
+    {
+      path: "parent.name",
+      label: "Parent category",
+      width: "2",
+      content: menuType => (
+        <div>{menuType.parent === null ? "Root" : menuType.parent.name}</div>
+      )
+    },
+    {
       path: "name",
       label: "Name",
-      width: "11"
+      width: "8"
       //   content: supplier => (
       //     <Link to={`/suppliers/view/${supplier.id}`}>{supplier.name}</Link>
       //   )

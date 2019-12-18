@@ -44,6 +44,15 @@ import ReceiveOrders from "./components/receive_order/receiveOrders";
 import ReceiveOrderDetail from "./components/receive_order/receiveOrderDetail";
 import InvoiceOrder from "./components/receive_order/invoiceOrder";
 
+import Cashiers from "./components/cashier/cashiers";
+import CashierForm from "./components/cashier/cashierForm";
+import CashierEditForm from "./components/cashier/cashierEditForm";
+
+import CashierOrders from "./components/cashier_order/cashierOrders";
+import CashierOrderDetail from "./components/cashier_order/cashierOrderDetail";
+
+import Terminal from "./components/terminal/terminal";
+
 import Recipes from "./components/recipe/recipes";
 
 import { ToastContainer } from "react-toastify";
@@ -182,6 +191,27 @@ class App extends Component {
               component={ReceiveOrderDetail}
             />
             <ProtectedRoute path="/receive-orders" component={ReceiveOrders} />
+
+            {/* cashiers routes */}
+            <ProtectedRoute
+              exact
+              path="/cashiers/:id"
+              component={CashierForm}
+            />
+            <ProtectedRoute
+              path="/cashiers/:id/edit"
+              component={CashierEditForm}
+            />
+            <ProtectedRoute path="/cashiers" component={Cashiers} />
+            {/* pos terminal */}
+            <ProtectedRoute
+              path="/cashiers-orders/view/:id"
+              component={CashierOrderDetail}
+            />
+            <ProtectedRoute path="/cashiers-orders" component={CashierOrders} />
+            {/* pos terminal */}
+            <ProtectedRoute path="/pos-terminal" component={Terminal} />
+
             <Route path="/login" component={LoginForm} />
             <Route path="/logout" component={Logout} />
             <Route path="/not-found" component={NotFound} />

@@ -1,22 +1,21 @@
 import React, { Component } from "react";
-import { getMenuTypes, deleteMenuType } from "../../services/menuTypeService";
+import { getUsers, deleteUser } from "../../services/userService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import SearchTextBox from "../common/searchTextBox";
-import MenuTypesTable from "./menuTypesTable";
+import CashiersTable from "./cashiersTable";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import _ from "lodash";
 import BlockUi from "react-block-ui";
-
+import _ from "lodash";
 import TableTitle from "../common/tableTitle";
 import { Table, Confirm } from "semantic-ui-react";
 
-class MenuTypes extends Component {
+class Cashiers extends Component {
   state = {
-    menu_types: [],
-    menuType: "",
     open: false,
+    cashier: "",
+    cashiers: [],
     pageSize: 10,
     currentPage: 1,
     keyFieldValue: "",
@@ -26,44 +25,43 @@ class MenuTypes extends Component {
 
   async componentDidMount() {
     this.setState({ blocking: true });
-    const { data: menu_types } = await getMenuTypes();
-    this.setState({ menu_types, blocking: false });
+    const { data: cashiers } = await getUsers();
+    this.setState({ cashiers, blocking: false });
   }
 
-  handleDelete = menuType => {
-    this.setState({ open: true, menuType });
-  };
-
-  handleCancel = () => {
-    this.setState({ open: false });
+  handleDelete = cashier => {
+    this.setState({ open: true, cashier });
   };
 
   doDelete = async () => {
-    const menuType = this.state.menuType;
-    const originalMenuTypes = this.state.menu_types;
-    const menu_types = originalMenuTypes.filter(o => o.id !== menuType.id);
-    this.setState({ menu_types });
+    const cashier = this.state.cashier;
+    const originalCashiers = this.state.cashiers;
+    const cashiers = originalCashiers.filter(o => o.id !== cashier.id);
+    this.setState({ cashiers, open: false });
 
     try {
-      await deleteMenuType(menuType.id);
-      this.setState({ open: false });
+      await deleteUser(cashier.id);
 
-      toast.success("Menu type has been deleted successfully.");
+      toast.success("Cashier has been deleted successfully.");
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
-        toast.success("This menu type has already been deleted.");
+        toast.success("This cashier has already been deleted.");
       }
 
-      this.setState({ menu_types: originalMenuTypes, open: false });
+      this.setState({ cashiers: originalCashiers });
     }
   };
 
-  handleUpdate = menuType => {
-    return this.props.history.replace("/menu-types/" + menuType.id + "/edit");
+  handleUpdate = cashier => {
+    return this.props.history.replace("/cashiers/" + cashier.id + "/edit");
   };
 
   handlePageChange = page => {
     this.setState({ currentPage: page });
+  };
+
+  handleCancel = () => {
+    this.setState({ open: false });
   };
 
   handleSearching = keyword => {
@@ -78,40 +76,41 @@ class MenuTypes extends Component {
     const {
       pageSize,
       currentPage,
-      menu_types: allMenuTypes,
+      cashiers: allCashiers,
       keyFieldValue,
       sortColumn
     } = this.state;
 
     const filtered = keyFieldValue
-      ? allMenuTypes.filter(
+      ? allCashiers.filter(
           m => m.name.toUpperCase().indexOf(keyFieldValue.toUpperCase()) > -1
         )
-      : allMenuTypes;
+      : allCashiers;
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
-    const menu_types = paginate(sorted, currentPage, pageSize);
-    return { totalCount: filtered.length, data: menu_types };
+    const cashiers = paginate(sorted, currentPage, pageSize);
+    return { totalCount: filtered.length, data: cashiers };
   };
 
   render() {
     const { pageSize, currentPage, sortColumn } = this.state;
-    const { totalCount, data: menu_types } = this.getPagedData();
-    const { length: count } = menu_types.length;
-    if (count === 0) return <p>There are no menu types in the store.</p>;
+    const { totalCount, data: cashiers } = this.getPagedData();
+    const { length: count } = cashiers.length;
+    if (count === 0) return <p>There are no cashiers in the store.</p>;
 
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Confirm
           open={this.state.open}
           header="Confirmation"
-          content="Are you sure, you want to delete the menu type?"
+          content="Are you sure, you want to delete the cashier?"
           onCancel={this.handleCancel}
           onConfirm={this.doDelete}
           size="mini"
         />
-        <TableTitle title="Menu Types" icon="tag" />
+
+        <TableTitle title="Cashiers" icon="tag" />
 
         <Table>
           <Table.Body>
@@ -120,18 +119,18 @@ class MenuTypes extends Component {
                 <SearchTextBox onSearchButtonClick={this.handleSearching} />
               </Table.Cell>
               <Table.Cell textAlign="right">
-                <Link to="/menu-types/new" className="ui primary button">
-                  New Menu Type
+                <Link to="/cashiers/new" className="ui primary button">
+                  New Cashier
                 </Link>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>
 
-        <p>Showing {totalCount} menu types.</p>
+        <p>Showing {totalCount} cashiers.</p>
 
-        <MenuTypesTable
-          menuTypes={menu_types}
+        <CashiersTable
+          cashiers={cashiers}
           sortColumn={sortColumn}
           onDelete={this.handleDelete}
           onUpdate={this.handleUpdate}
@@ -148,4 +147,4 @@ class MenuTypes extends Component {
   }
 }
 
-export default MenuTypes;
+export default Cashiers;

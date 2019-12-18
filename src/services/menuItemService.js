@@ -2,6 +2,12 @@ import http from "./httpService";
 import config from "../config.json";
 import auth from "./authService";
 
+const headers = {
+  headers: {
+    "Content-Type": "multipart/form-data"
+  }
+};
+
 function menuItemStoreUrl(id) {
   if (id) return `/outlet/${auth.getCurrentUser().outlet_id}/menu-items/${id}`;
   else return `/outlet/${auth.getCurrentUser().outlet_id}/menu-items`;
@@ -16,11 +22,11 @@ export function deleteMenuItem(menuItemId) {
 }
 
 export function saveMenuItem(menuItem) {
-  return http.post(menuItemStoreUrl(), menuItem);
+  return http.post(menuItemStoreUrl(), menuItem, headers);
 }
 
-export function updateMenuItem(menuItem) {
-  return http.put(menuItemStoreUrl(menuItem.id), menuItem);
+export function updateMenuItem(menuItem, menuItemId) {
+  return http.post(menuItemStoreUrl(menuItemId), menuItem, headers);
 }
 
 export function getMenuItem(menuItemId) {
