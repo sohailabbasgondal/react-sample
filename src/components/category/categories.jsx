@@ -24,11 +24,20 @@ class Categories extends Component {
   };
 
   async componentDidMount() {
-    this.setState({ blocking: true });
+    this.setState({ blocking: true, show: "none" });
     const { data: categories } = await getCategories();
+    this.checkTotalCategories(categories);
     this.state.blocking = false;
     this.setState({ categories, blocking: false });
   }
+
+  checkTotalCategories = categories => {
+    if (categories.length > 0) {
+      this.setState({ show: "none" });
+    } else {
+      this.setState({ show: "block" });
+    }
+  };
 
   handleDelete = category => {
     this.setState({ open: true, category });
@@ -46,6 +55,7 @@ class Categories extends Component {
 
     try {
       await deleteCategory(category.id);
+      this.checkTotalCategories(categories);
       toast.success("Category has been updated successfully.");
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
@@ -94,10 +104,11 @@ class Categories extends Component {
   };
 
   render() {
-    const { pageSize, currentPage, sortColumn } = this.state;
+    const emtpyUrl = process.env.REACT_APP_URL + "/empty1.png";
+    const { pageSize, currentPage, sortColumn, show } = this.state;
     const { totalCount, data: categories } = this.getPagedData();
-    const { length: count } = categories.length;
-    if (count === 0) return <p>There are no categories in the store.</p>;
+
+    const otherShow = show === "none" ? "block" : "none";
 
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
@@ -112,36 +123,50 @@ class Categories extends Component {
 
         <TableTitle title="Categories" icon="tag" />
 
-        <Table>
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell style={{ paddingBottom: 0 }}>
-                <SearchTextBox onSearchButtonClick={this.handleSearching} />
-              </Table.Cell>
-              <Table.Cell textAlign="right">
-                <Link to="/categories/new" className="ui primary button">
-                  New Category
-                </Link>
-              </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
+        <div style={{ display: show }}>
+          <center>
+            <img src={emtpyUrl} />
+            <div>
+              <p>Categories not added yet.</p>
+              <Link to="/categories/new" className="ui primary button">
+                New Category
+              </Link>
+            </div>
+          </center>
+        </div>
 
-        <p>Showing {totalCount} categories.</p>
+        <div style={{ display: otherShow }}>
+          <Table>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell style={{ paddingBottom: 0 }}>
+                  <SearchTextBox onSearchButtonClick={this.handleSearching} />
+                </Table.Cell>
+                <Table.Cell textAlign="right">
+                  <Link to="/categories/new" className="ui primary button">
+                    New Category
+                  </Link>
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
 
-        <CategoriesTable
-          categories={categories}
-          sortColumn={sortColumn}
-          onDelete={this.handleDelete}
-          onUpdate={this.handleUpdate}
-          onSort={this.handleSort}
-        />
-        <Pagination
-          itemsCount={totalCount}
-          pageSize={pageSize}
-          onPageChange={this.handlePageChange}
-          currentPage={currentPage}
-        />
+          <p>Showing {totalCount} categories.</p>
+
+          <CategoriesTable
+            categories={categories}
+            sortColumn={sortColumn}
+            onDelete={this.handleDelete}
+            onUpdate={this.handleUpdate}
+            onSort={this.handleSort}
+          />
+          <Pagination
+            itemsCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={this.handlePageChange}
+            currentPage={currentPage}
+          />
+        </div>
       </BlockUi>
     );
   }

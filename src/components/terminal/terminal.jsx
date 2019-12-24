@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import {
   getMenuTypes,
   getMenuDataItems,
@@ -15,6 +16,7 @@ import {
   updateMenuDataCombinedItem,
   loadMainMenuData
 } from "../../services/terminalService";
+import ReactToPrint from "react-to-print";
 import {
   Grid,
   Image,
@@ -28,7 +30,9 @@ import {
 import BlockUi from "react-block-ui";
 import Counter from "../order/counter";
 import { toast } from "react-toastify";
-import { updateMenuItem } from "../../services/menuItemService";
+import auth from "../../services/authService";
+
+import Printing from "../order/printing";
 
 class Terminal extends Component {
   state = {
@@ -38,10 +42,14 @@ class Terminal extends Component {
     show: "none",
     orderType: "dine-in",
     back: "root",
-    paymentType: "cash"
+    paymentType: "cash",
+    user: []
   };
 
   async componentDidMount() {
+    const user = auth.getCurrentUser();
+
+    this.setState({ user });
     this.setState({ blocking: true });
     const { data: menu_types } = await getMenuTypes();
     let visible_menu_types = saveMenuDataItem(menu_types);
@@ -150,12 +158,18 @@ class Terminal extends Component {
   };
 
   render() {
+    const { user } = this.state;
+
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Grid>
           <Grid.Row columns={2}>
             <Grid.Column width={6} style={{ paddingRight: "40px" }}>
-              <center>
+              <center
+                style={{
+                  display: user.user_type == "cashier" ? "block" : "none"
+                }}
+              >
                 <Button.Group>
                   <Button
                     positive={this.state.orderType === "dine-in" ? true : false}
@@ -172,23 +186,9 @@ class Terminal extends Component {
                   >
                     Delivery
                   </Button>
-                  <Button.Or text="or" />
-                  <Button
-                    positive={this.state.orderType === "phone" ? true : false}
-                    onClick={() => this.updateOrderType("phone")}
-                  >
-                    Phone
-                  </Button>
-                  <Button.Or text="or" />
-                  <Button
-                    positive={this.state.orderType === "web" ? true : false}
-                    onClick={() => this.updateOrderType("web")}
-                  >
-                    Web
-                  </Button>
                 </Button.Group>
 
-                <Button.Group style={{ marginTop: "12px" }}>
+                <Button.Group style={{ marginLeft: "14px" }}>
                   <Button
                     positive={this.state.paymentType === "cash" ? true : false}
                     onClick={() => this.updatePaymentType("cash")}
@@ -244,6 +244,21 @@ class Terminal extends Component {
                     <Button primary onClick={this.saveOrder}>
                       Submit Order
                     </Button>
+
+                    <ReactToPrint
+                      trigger={() => (
+                        <Button
+                          style={{
+                            display:
+                              user.user_type == "cashier" ? "block" : "none"
+                          }}
+                          secondary
+                        >
+                          Print receipt
+                        </Button>
+                      )}
+                      content={() => this.componentRef}
+                    />
                   </Form>
                 </Card.Content>
               </Card>
@@ -267,10 +282,11 @@ class Terminal extends Component {
                         ribbon: false
                       }}
                       src={
-                        item.thumbnail === "" ||
-                        item.thumbnail === "http://laravel.local/storage/"
+                        item.thumbnail === ""
                           ? "/white-image.png"
-                          : item.thumbnail
+                          : process.env.REACT_APP_BACKEND_URL +
+                            "/storage/" +
+                            item.thumbnail
                       }
                       onClick={() => this.handleType(item)}
                     />
@@ -289,6 +305,47 @@ class Terminal extends Component {
                   />
                 </Grid.Column>
               </Grid>
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br /> <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <Printing
+                order={this.state.orderItems}
+                total={getOrderTotal()}
+                ref={el => (this.componentRef = el)}
+              />
             </Grid.Column>
           </Grid.Row>
         </Grid>

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Table from "../common/table";
 import { Link } from "react-router-dom";
 import OrderTotal from "../order/orderTotal";
+import { Label } from "semantic-ui-react";
 
 class CashierOrdersTable extends Component {
   columns = [
@@ -16,12 +17,22 @@ class CashierOrdersTable extends Component {
       )
     },
     { path: "created_at", label: "Order date", width: "3" },
-
     {
       path: "status",
       label: "Status",
       width: "1",
-      content: order => (order.status == 1 ? "Pending" : "Delivered")
+      content: order =>
+        order.status == 1 ? (
+          <Label color="blue">New</Label>
+        ) : order.status == 2 ? (
+          <Label color="yellow">Pending</Label>
+        ) : order.status == 3 ? (
+          <Label color="red">Ready</Label>
+        ) : order.status == 4 ? (
+          <Label color="green">Finished</Label>
+        ) : (
+          ""
+        )
     },
     {
       path: "total_items",
@@ -31,7 +42,7 @@ class CashierOrdersTable extends Component {
     },
     {
       path: "total_items1",
-      label: "Estimated price",
+      label: "Price",
       width: "2",
       content: order => <OrderTotal key={order.id} items={order.total_items} />
     }

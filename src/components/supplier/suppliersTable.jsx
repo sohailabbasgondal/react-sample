@@ -1,21 +1,27 @@
 import React, { Component } from "react";
 import RenderTable from "../common/table";
-import { Link } from "react-router-dom";
-import { Icon } from "semantic-ui-react";
+import { Icon, Label } from "semantic-ui-react";
 class SuppliersTable extends Component {
   columns = [
     {
       path: "name",
       label: "Name",
-      width: "3"
-      //   content: supplier => (
-      //     <Link to={`/suppliers/view/${supplier.id}`}>{supplier.name}</Link>
-      //   )
+      width: "4"
     },
-    { path: "emails", label: "Emails", width: "5" },
-    { path: "phone", label: "Phone", width: "3" },
+    { path: "emails", label: "Emails", width: "6" },
+    { path: "phone", label: "Phone", width: "2" },
     { path: "min_order_value", label: "Min order value", width: "2" },
-    { path: "createdDate", label: "Added date", width: "2" },
+    {
+      path: "status",
+      label: "Status",
+      width: "1",
+      content: supplier =>
+        supplier.status == 1 ? (
+          <Label color="green">Enbled</Label>
+        ) : (
+          <Label color="yellow">Disabled</Label>
+        )
+    },
     {
       key: "actions",
       width: "1",

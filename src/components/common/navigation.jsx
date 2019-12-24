@@ -14,7 +14,7 @@ const Navigation = ({ user }) => {
           />
         </Menu.Item>
 
-        {user && (
+        {user && (user.user_type === "cashier" || user.user_type === "waiter") && (
           <Menu.Item>
             <NavLink className="nav-item nav-link" to="/dashboard">
               Dashboard
@@ -22,10 +22,21 @@ const Navigation = ({ user }) => {
           </Menu.Item>
         )}
 
-        {user && user.user_type === "cashier" && (
+        {user &&
+          (user.user_type === "cashier" ||
+            user.user_type === "waiter" ||
+            user.user_type === "kitchen") && (
+            <Menu.Item>
+              <NavLink className="nav-item nav-link" to="/order-queue">
+                Orders Queue
+              </NavLink>
+            </Menu.Item>
+          )}
+
+        {user && (user.user_type === "cashier" || user.user_type === "waiter") && (
           <Menu.Item>
             <NavLink className="nav-item nav-link" to="/pos-terminal">
-              POS terminal
+              Terminal
             </NavLink>
           </Menu.Item>
         )}
@@ -121,6 +132,16 @@ const Navigation = ({ user }) => {
                 <Dropdown.Item>
                   <NavLink style={{ color: "#000" }} to="/cashiers">
                     Cashiers
+                  </NavLink>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/waiters">
+                    Waiters
+                  </NavLink>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/kitchens">
+                    Kitchen
                   </NavLink>
                 </Dropdown.Item>
               </Dropdown.Menu>

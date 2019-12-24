@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Table from "../common/table";
-import { Link } from "react-router-dom";
-import { Icon } from "semantic-ui-react";
+import { Icon, Label } from "semantic-ui-react";
 
 class MenuItemsTable extends Component {
   columns = [
@@ -11,22 +10,39 @@ class MenuItemsTable extends Component {
       width: "1",
       content: menuItem => (
         <div>
-          <img width="50" src={menuItem.thumbnail} />
+          <img
+            width="50"
+            src={
+              process.env.REACT_APP_BACKEND_URL +
+              "/storage/" +
+              menuItem.thumbnail
+            }
+          />
         </div>
       )
     },
     {
       path: "name",
       label: "Name",
-      width: "7"
+      width: "10"
     },
     {
       path: "price",
       label: "Price",
       width: "2"
     },
-    { path: "status", label: "Status", width: "2" },
-    { path: "createdDate", label: "Created date", width: "2" },
+    {
+      path: "status",
+      label: "Status",
+      width: "1",
+      content: menuItem =>
+        menuItem.status == 1 ? (
+          <Label color="green">Enbled</Label>
+        ) : (
+          <Label color="yellow">Disabled</Label>
+        )
+    },
+
     {
       key: "actions",
       width: "2",

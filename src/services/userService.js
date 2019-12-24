@@ -6,15 +6,20 @@ function userStoreUrl(id) {
   else return `/outlet/${auth.getCurrentUser().outlet_id}/accounts`;
 }
 
-export function getUsers() {
-  return http.get(userStoreUrl());
+function outletUserUrl(userType) {
+  return `/outlet/${auth.getCurrentUser().outlet_id}/accounts/user/${userType}`;
+}
+
+export function getUsers($userType) {
+  return http.get(outletUserUrl($userType));
 }
 
 export function deleteUser(userId) {
   return http.delete(userStoreUrl(userId));
 }
 
-export function saveUser(user) {
+export function saveUser(user, userType) {
+  user.user_type = userType;
   return http.post(userStoreUrl(), user);
 }
 

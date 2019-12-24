@@ -3,7 +3,7 @@ import { getUsers, deleteUser } from "../../services/userService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import SearchTextBox from "../common/searchTextBox";
-import CashiersTable from "./cashiersTable";
+import WaitersTable from "./waitersTable";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import BlockUi from "react-block-ui";
@@ -11,7 +11,7 @@ import _ from "lodash";
 import TableTitle from "../common/tableTitle";
 import { Table, Confirm } from "semantic-ui-react";
 
-class Cashiers extends Component {
+class Waiters extends Component {
   state = {
     open: false,
     cashier: "",
@@ -25,7 +25,7 @@ class Cashiers extends Component {
 
   async componentDidMount() {
     this.setState({ blocking: true });
-    const { data: cashiers } = await getUsers("cashier");
+    const { data: cashiers } = await getUsers("waiter");
     this.setState({ cashiers, blocking: false });
   }
 
@@ -42,10 +42,10 @@ class Cashiers extends Component {
     try {
       await deleteUser(cashier.id);
 
-      toast.success("Cashier has been deleted successfully.");
+      toast.success("Waiter has been deleted successfully.");
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
-        toast.success("This cashier has already been deleted.");
+        toast.success("This waiter has already been deleted.");
       }
 
       this.setState({ cashiers: originalCashiers });
@@ -53,7 +53,7 @@ class Cashiers extends Component {
   };
 
   handleUpdate = cashier => {
-    return this.props.history.replace("/cashiers/" + cashier.id + "/edit");
+    return this.props.history.replace("/waiters/" + cashier.id + "/edit");
   };
 
   handlePageChange = page => {
@@ -97,20 +97,20 @@ class Cashiers extends Component {
     const { pageSize, currentPage, sortColumn } = this.state;
     const { totalCount, data: cashiers } = this.getPagedData();
     const { length: count } = cashiers.length;
-    if (count === 0) return <p>There are no cashiers in the store.</p>;
+    if (count === 0) return <p>There are no waiters in the store.</p>;
 
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Confirm
           open={this.state.open}
           header="Confirmation"
-          content="Are you sure, you want to delete the cashier?"
+          content="Are you sure, you want to delete the waiter?"
           onCancel={this.handleCancel}
           onConfirm={this.doDelete}
           size="mini"
         />
 
-        <TableTitle title="Cashiers" icon="tag" />
+        <TableTitle title="Waiters" icon="tag" />
 
         <Table>
           <Table.Body>
@@ -119,17 +119,17 @@ class Cashiers extends Component {
                 <SearchTextBox onSearchButtonClick={this.handleSearching} />
               </Table.Cell>
               <Table.Cell textAlign="right">
-                <Link to="/cashiers/new" className="ui primary button">
-                  New Cashier
+                <Link to="/waiters/new" className="ui primary button">
+                  New Waiter
                 </Link>
               </Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>
 
-        <p>Showing {totalCount} cashiers.</p>
+        <p>Showing {totalCount} waiters.</p>
 
-        <CashiersTable
+        <WaitersTable
           cashiers={cashiers}
           sortColumn={sortColumn}
           onDelete={this.handleDelete}
@@ -147,4 +147,4 @@ class Cashiers extends Component {
   }
 }
 
-export default Cashiers;
+export default Waiters;

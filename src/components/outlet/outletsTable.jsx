@@ -18,7 +18,7 @@ class OutletsTable extends Component {
     { path: "zip", label: "Zip", width: "2" },
     { path: "phone", label: "Phone", width: "2" },
     //{ path: "emails", label: "Emails" },
-    { path: "createdDate", label: "Created date", width: "2" },
+    { path: "created_at", label: "Created date", width: "2" },
     {
       key: "action",
       width: "2",

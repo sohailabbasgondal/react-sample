@@ -23,7 +23,12 @@ class ReceiveOrdersTable extends Component {
       path: "status",
       label: "Status",
       width: "1",
-      content: order => (order.status == 1 ? "Pending" : "Delivered")
+      content: order =>
+        order.status == 1 ? (
+          <Label color="yellow">Pending</Label>
+        ) : (
+          <Label color="green">Delivered</Label>
+        )
     },
     {
       path: "total_items",

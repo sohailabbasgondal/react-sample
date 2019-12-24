@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Table from "../common/table";
 import { Link } from "react-router-dom";
 import OrderTotal from "../order/orderTotal";
+import { Label } from "semantic-ui-react";
 
 class SupplierOrdersTable extends Component {
   columns = [
@@ -22,7 +23,12 @@ class SupplierOrdersTable extends Component {
       path: "status",
       label: "Status",
       width: "1",
-      content: order => (order.status == 1 ? "Pending" : "Delivered")
+      content: order =>
+        order.status == 1 ? (
+          <Label color="yellow">Pending</Label>
+        ) : (
+          <Label color="green">Delivered</Label>
+        )
     },
     {
       path: "total_items",

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import RenderTable from "../common/table";
 import { Icon, Label } from "semantic-ui-react";
-class CashiersTable extends Component {
+class WaitersTable extends Component {
   columns = [
     {
       path: "user.name",
@@ -57,4 +57,4 @@ class CashiersTable extends Component {
   }
 }
 
-export default CashiersTable;
+export default WaitersTable;

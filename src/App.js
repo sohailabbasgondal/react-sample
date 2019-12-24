@@ -48,10 +48,20 @@ import Cashiers from "./components/cashier/cashiers";
 import CashierForm from "./components/cashier/cashierForm";
 import CashierEditForm from "./components/cashier/cashierEditForm";
 
+import Waiters from "./components/waiter/waiters";
+import WaiterForm from "./components/waiter/waiterForm";
+import WaiterEditForm from "./components/waiter/waiterEditForm";
+
+import Kitchens from "./components/kitchen/kitchens";
+import KitchenForm from "./components/kitchen/kitchenForm";
+import KitchenEditForm from "./components/kitchen/kitchenEditForm";
+
 import CashierOrders from "./components/cashier_order/cashierOrders";
 import CashierOrderDetail from "./components/cashier_order/cashierOrderDetail";
 
 import Terminal from "./components/terminal/terminal";
+
+import Queue from "./components/queue/queue";
 
 import Recipes from "./components/recipe/recipes";
 
@@ -203,6 +213,27 @@ class App extends Component {
               component={CashierEditForm}
             />
             <ProtectedRoute path="/cashiers" component={Cashiers} />
+
+            {/* waiters routes */}
+            <ProtectedRoute exact path="/waiters/:id" component={WaiterForm} />
+            <ProtectedRoute
+              path="/waiters/:id/edit"
+              component={WaiterEditForm}
+            />
+            <ProtectedRoute path="/waiters" component={Waiters} />
+
+            {/* kitchens routes */}
+            <ProtectedRoute
+              exact
+              path="/kitchens/:id"
+              component={KitchenForm}
+            />
+            <ProtectedRoute
+              path="/kitchens/:id/edit"
+              component={KitchenEditForm}
+            />
+            <ProtectedRoute path="/kitchens" component={Kitchens} />
+
             {/* pos terminal */}
             <ProtectedRoute
               path="/cashiers-orders/view/:id"
@@ -211,6 +242,8 @@ class App extends Component {
             <ProtectedRoute path="/cashiers-orders" component={CashierOrders} />
             {/* pos terminal */}
             <ProtectedRoute path="/pos-terminal" component={Terminal} />
+            {/* order queue */}
+            <ProtectedRoute path="/order-queue" component={Queue} />
 
             <Route path="/login" component={LoginForm} />
             <Route path="/logout" component={Logout} />

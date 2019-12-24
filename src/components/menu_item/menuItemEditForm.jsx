@@ -153,7 +153,11 @@ class MenuItemEditForm extends Form {
                         className="add_imagem"
                         name="add_imagem"
                         height="40"
-                        src={this.state.imagePreviewUrl}
+                        src={
+                          process.env.REACT_APP_BACKEND_URL +
+                          "/storage/" +
+                          this.state.imagePreviewUrl
+                        }
                       />
                     ) : (
                       ""

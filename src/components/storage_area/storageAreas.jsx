@@ -28,10 +28,19 @@ class StorageAreas extends Component {
   };
 
   async componentDidMount() {
-    this.setState({ blocking: true });
+    this.setState({ blocking: true, show: "none" });
     const { data: storage_areas } = await getStorageAreas();
+    this.checkTotalStorageAreas(storage_areas);
     this.setState({ storage_areas, blocking: false });
   }
+
+  checkTotalStorageAreas = storage_areas => {
+    if (storage_areas.length > 0) {
+      this.setState({ show: "none" });
+    } else {
+      this.setState({ show: "block" });
+    }
+  };
 
   handleDelete = storgeArea => {
     this.setState({ open: true, storgeArea });
@@ -51,6 +60,7 @@ class StorageAreas extends Component {
 
     try {
       await deleteStorageArea(storgeArea.id);
+      this.checkTotalStorageAreas(storage_areas);
       this.setState({ open: false });
 
       toast.success("Storage area has been deleted successfully.");
@@ -103,10 +113,10 @@ class StorageAreas extends Component {
   };
 
   render() {
-    const { pageSize, currentPage, sortColumn } = this.state;
+    const emtpyUrl = process.env.REACT_APP_URL + "/empty1.png";
+    const { pageSize, currentPage, sortColumn, show } = this.state;
     const { totalCount, data: storage_areas } = this.getPagedData();
-    const { length: count } = storage_areas.length;
-    if (count === 0) return <p>There are no storage areas in the store.</p>;
+    const otherShow = show === "none" ? "block" : "none";
 
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
@@ -120,36 +130,50 @@ class StorageAreas extends Component {
         />
         <TableTitle title="Storage Areas" icon="tag" />
 
-        <Table>
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell style={{ paddingBottom: 0 }}>
-                <SearchTextBox onSearchButtonClick={this.handleSearching} />
-              </Table.Cell>
-              <Table.Cell textAlign="right">
-                <Link to="/storage-areas/new" className="ui primary button">
-                  New Storage Area
-                </Link>
-              </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
+        <div style={{ display: show }}>
+          <center>
+            <img src={emtpyUrl} />
+            <div>
+              <p>Storage Areas not added yet.</p>
+              <Link to="/storage-areas/new" className="ui primary button">
+                New Storage Area
+              </Link>
+            </div>
+          </center>
+        </div>
 
-        <p>Showing {totalCount} storage areas.</p>
+        <div style={{ display: otherShow }}>
+          <Table>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell style={{ paddingBottom: 0 }}>
+                  <SearchTextBox onSearchButtonClick={this.handleSearching} />
+                </Table.Cell>
+                <Table.Cell textAlign="right">
+                  <Link to="/storage-areas/new" className="ui primary button">
+                    New Storage Area
+                  </Link>
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
 
-        <StorageAreasTable
-          storageAreas={storage_areas}
-          sortColumn={sortColumn}
-          onDelete={this.handleDelete}
-          onUpdate={this.handleUpdate}
-          onSort={this.handleSort}
-        />
-        <Pagination
-          itemsCount={totalCount}
-          pageSize={pageSize}
-          onPageChange={this.handlePageChange}
-          currentPage={currentPage}
-        />
+          <p>Showing {totalCount} storage areas.</p>
+
+          <StorageAreasTable
+            storageAreas={storage_areas}
+            sortColumn={sortColumn}
+            onDelete={this.handleDelete}
+            onUpdate={this.handleUpdate}
+            onSort={this.handleSort}
+          />
+          <Pagination
+            itemsCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={this.handlePageChange}
+            currentPage={currentPage}
+          />
+        </div>
       </BlockUi>
     );
   }

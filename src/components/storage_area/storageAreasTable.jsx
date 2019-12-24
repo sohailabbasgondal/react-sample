@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Table from "../common/table";
-import { Link } from "react-router-dom";
-import { Icon } from "semantic-ui-react";
+import { Icon, Label } from "semantic-ui-react";
 
 class StorageAreasTable extends Component {
   columns = [
@@ -9,13 +8,19 @@ class StorageAreasTable extends Component {
       path: "name",
       label: "Name",
       width: "4"
-      //   content: supplier => (
-      //     <Link to={`/suppliers/view/${supplier.id}`}>{supplier.name}</Link>
-      //   )
     },
-    { path: "description", label: "Description", width: "7" },
-    { path: "status", label: "Status", width: "2" },
-    { path: "createdDate", label: "Created date", width: "2" },
+    { path: "description", label: "Description", width: "8" },
+    {
+      path: "status",
+      label: "Status",
+      width: "1",
+      content: storageArea =>
+        storageArea.status == 1 ? (
+          <Label color="green">Enbled</Label>
+        ) : (
+          <Label color="yellow">Disabled</Label>
+        )
+    },
     {
       key: "actions",
       width: "1",

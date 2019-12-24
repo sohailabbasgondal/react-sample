@@ -24,10 +24,19 @@ class Suppliers extends Component {
   };
 
   async componentDidMount() {
-    this.setState({ blocking: true });
+    this.setState({ blocking: true, show: "none" });
     const { data: suppliers } = await getSuppliers();
+    this.checkTotalSuppliers(suppliers);
     this.setState({ suppliers, blocking: false });
   }
+
+  checkTotalSuppliers = suppliers => {
+    if (suppliers.length > 0) {
+      this.setState({ show: "none" });
+    } else {
+      this.setState({ show: "block" });
+    }
+  };
 
   handleDelete = supplier => {
     this.setState({ open: true, supplier });
@@ -41,7 +50,7 @@ class Suppliers extends Component {
 
     try {
       await deleteSupplier(supplier.id);
-
+      this.checkTotalSuppliers(suppliers);
       toast.success("Supplier has been deleted successfully.");
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
@@ -94,11 +103,10 @@ class Suppliers extends Component {
   };
 
   render() {
-    const { pageSize, currentPage, sortColumn } = this.state;
+    const emtpyUrl = process.env.REACT_APP_URL + "/empty1.png";
+    const { pageSize, currentPage, sortColumn, show } = this.state;
     const { totalCount, data: suppliers } = this.getPagedData();
-    const { length: count } = suppliers.length;
-    if (count === 0) return <p>There are no suppliers in the store.</p>;
-
+    const otherShow = show === "none" ? "block" : "none";
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Confirm
@@ -109,39 +117,51 @@ class Suppliers extends Component {
           onConfirm={this.doDelete}
           size="mini"
         />
-
         <TableTitle title="Suppliers" icon="tag" />
+        <div style={{ display: show }}>
+          <center>
+            <img src={emtpyUrl} />
+            <div>
+              <p>Suppliers not added yet.</p>
+              <Link to="/suppliers/new" className="ui primary button">
+                New Supplier
+              </Link>
+            </div>
+          </center>
+        </div>
 
-        <Table>
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell style={{ paddingBottom: 0 }}>
-                <SearchTextBox onSearchButtonClick={this.handleSearching} />
-              </Table.Cell>
-              <Table.Cell textAlign="right">
-                <Link to="/suppliers/new" className="ui primary button">
-                  New Supplier
-                </Link>
-              </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
+        <div style={{ display: otherShow }}>
+          <Table>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell style={{ paddingBottom: 0 }}>
+                  <SearchTextBox onSearchButtonClick={this.handleSearching} />
+                </Table.Cell>
+                <Table.Cell textAlign="right">
+                  <Link to="/suppliers/new" className="ui primary button">
+                    New Supplier
+                  </Link>
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
 
-        <p>Showing {totalCount} suppliers.</p>
+          <p>Showing {totalCount} suppliers.</p>
 
-        <SuppliersTable
-          suppliers={suppliers}
-          sortColumn={sortColumn}
-          onDelete={this.handleDelete}
-          onUpdate={this.handleUpdate}
-          onSort={this.handleSort}
-        />
-        <Pagination
-          itemsCount={totalCount}
-          pageSize={pageSize}
-          onPageChange={this.handlePageChange}
-          currentPage={currentPage}
-        />
+          <SuppliersTable
+            suppliers={suppliers}
+            sortColumn={sortColumn}
+            onDelete={this.handleDelete}
+            onUpdate={this.handleUpdate}
+            onSort={this.handleSort}
+          />
+          <Pagination
+            itemsCount={totalCount}
+            pageSize={pageSize}
+            onPageChange={this.handlePageChange}
+            currentPage={currentPage}
+          />
+        </div>
       </BlockUi>
     );
   }
