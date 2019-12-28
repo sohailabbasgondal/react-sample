@@ -14,13 +14,17 @@ const Navigation = ({ user }) => {
           />
         </Menu.Item>
 
-        {user && (user.user_type === "cashier" || user.user_type === "waiter") && (
-          <Menu.Item>
-            <NavLink className="nav-item nav-link" to="/dashboard">
-              Dashboard
-            </NavLink>
-          </Menu.Item>
-        )}
+        {user &&
+          (user.user_type === "store-manager" ||
+            user.user_type === "cashier" ||
+            user.user_type === "client" ||
+            user.user_type === "waiter") && (
+            <Menu.Item>
+              <NavLink className="nav-item nav-link" to="/dashboard">
+                Dashboard
+              </NavLink>
+            </Menu.Item>
+          )}
 
         {user &&
           (user.user_type === "cashier" ||

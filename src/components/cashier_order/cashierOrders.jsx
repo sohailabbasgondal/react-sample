@@ -4,11 +4,10 @@ import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import CashierOrdersTable from "./cashierOrdersTable";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import _ from "lodash";
 import BlockUi from "react-block-ui";
 import TableTitle from "../common/tableTitle";
-import { Table, Confirm, Grid } from "semantic-ui-react";
+import { Table, Grid } from "semantic-ui-react";
 import Input from "../common/input";
 import Select from "../common/select";
 import { getUsers } from "../../services/userService";
@@ -28,11 +27,12 @@ class CashierOrders extends Component {
     cashiers: [],
 
     keyFieldValue: "",
-    cashier_id: ""
+    cashier_id: "",
+    status: ""
   };
 
   async componentDidMount() {
-    const { data: users } = await getUsers();
+    const { data: users } = await getUsers("cashier");
     const cashiers = [{ id: "", name: "All Cashiers" }];
 
     for (const [index, value] of users.entries()) {
@@ -65,10 +65,11 @@ class CashierOrders extends Component {
     this.setState({ currentPage: page });
   };
 
-  handleSearching = (keyword, cashier_id) => {
+  handleSearching = (keyword, cashier_id, status) => {
     this.setState({
       keyFieldValue: keyword,
       cashier_id,
+      status,
       currentPage: 1
     });
   };
@@ -84,7 +85,8 @@ class CashierOrders extends Component {
       orders: allOrders,
       sortColumn,
       keyFieldValue,
-      cashier_id
+      cashier_id,
+      status
     } = this.state;
 
     let filtered = allOrders;
@@ -97,6 +99,8 @@ class CashierOrders extends Component {
       ? filtered.filter(m => m.user.id == cashier_id)
       : filtered;
 
+    filtered = status ? filtered.filter(m => m.status == status) : filtered;
+
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
     const orders = paginate(sorted, currentPage, pageSize);
@@ -106,6 +110,7 @@ class CashierOrders extends Component {
   clearFilters() {
     document.getElementById("keyword").value = "";
     document.getElementById("cashier_id").value = "";
+    document.getElementById("status").value = "";
     this.setState({
       data: { cashier_id: "" }
     });
@@ -117,6 +122,13 @@ class CashierOrders extends Component {
     const { totalCount, data: orders } = this.getPagedData();
     const { length: count } = orders.length;
     if (count === 0) return <p>There are no orders in the store.</p>;
+
+    const statusOptions = [
+      { id: "", name: "All status" },
+      { id: 1, name: "New" },
+      { id: 2, name: "Pending" },
+      { id: 3, name: "Ready" }
+    ];
 
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
@@ -155,11 +167,20 @@ class CashierOrders extends Component {
                           </Table.Cell>
 
                           <Table.Cell>
+                            <Select
+                              name="status"
+                              id="status"
+                              options={statusOptions}
+                            />
+                          </Table.Cell>
+
+                          <Table.Cell>
                             <button
                               onClick={() =>
                                 this.handleSearching(
                                   document.getElementById("keyword").value,
-                                  document.getElementById("cashier_id").value
+                                  document.getElementById("cashier_id").value,
+                                  document.getElementById("status").value
                                 )
                               }
                               id="searcBtn"

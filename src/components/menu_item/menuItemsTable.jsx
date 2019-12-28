@@ -10,21 +10,34 @@ class MenuItemsTable extends Component {
       width: "1",
       content: menuItem => (
         <div>
-          <img
-            width="50"
-            src={
-              process.env.REACT_APP_BACKEND_URL +
-              "/storage/" +
-              menuItem.thumbnail
-            }
-          />
+          {menuItem.thumbnail != "" ? (
+            <img
+              width="50"
+              src={
+                process.env.REACT_APP_BACKEND_URL +
+                "/storage/" +
+                menuItem.thumbnail
+              }
+            />
+          ) : (
+            <img
+              width="50"
+              src={process.env.REACT_APP_URL + "/white-image.png"}
+            />
+          )}
         </div>
       )
     },
     {
+      path: "menu_type_id",
+      label: "Menu Type",
+      width: "4",
+      content: menuItem => menuItem.menu_type.name
+    },
+    {
       path: "name",
       label: "Name",
-      width: "10"
+      width: "6"
     },
     {
       path: "price",

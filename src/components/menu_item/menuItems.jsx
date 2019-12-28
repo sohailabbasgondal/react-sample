@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { getMenuItems, deleteMenuItem } from "../../services/menuItemService";
+import { getMenuTypes } from "../../services/menuTypeService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import SearchTextBox from "../common/searchTextBox";
@@ -11,10 +12,13 @@ import BlockUi from "react-block-ui";
 
 import TableTitle from "../common/tableTitle";
 import { Table, Confirm } from "semantic-ui-react";
+import Input from "../common/input";
+import Select from "../common/select";
 
 class MenuItems extends Component {
   state = {
     menu_items: [],
+    menu_types_dd: [],
     menuItem: "",
     open: false,
     pageSize: 10,
@@ -27,7 +31,15 @@ class MenuItems extends Component {
   async componentDidMount() {
     this.setState({ blocking: true });
     const { data: menu_items } = await getMenuItems();
-    this.setState({ menu_items, blocking: false });
+
+    const { data: menu_types } = await getMenuTypes();
+
+    const mt = [{ id: "", name: "All menu types" }];
+    for (const [index, value] of menu_types.entries()) {
+      mt.push({ id: value.id, name: value.name });
+    }
+
+    this.setState({ menu_items, blocking: false, menu_types_dd: mt });
   }
 
   handleDelete = menuItem => {
@@ -70,13 +82,20 @@ class MenuItems extends Component {
     this.setState({ currentPage: page });
   };
 
-  handleSearching = keyword => {
-    this.setState({ keyFieldValue: keyword, currentPage: 1 });
+  handleSearching = (keyword, menu_type_id) => {
+    this.setState({ keyFieldValue: keyword, menu_type_id, currentPage: 1 });
   };
 
   handleSort = sortColumn => {
     this.setState({ sortColumn });
   };
+
+  clearFilters() {
+    document.getElementById("keyword").value = "";
+    document.getElementById("menu_type_id").value = "";
+
+    document.getElementById("searcBtn").click();
+  }
 
   getPagedData = () => {
     const {
@@ -84,14 +103,19 @@ class MenuItems extends Component {
       currentPage,
       menu_items: allMenuItems,
       keyFieldValue,
-      sortColumn
+      sortColumn,
+      menu_type_id
     } = this.state;
 
-    const filtered = keyFieldValue
+    let filtered = keyFieldValue
       ? allMenuItems.filter(
           m => m.name.toUpperCase().indexOf(keyFieldValue.toUpperCase()) > -1
         )
       : allMenuItems;
+
+    filtered = menu_type_id
+      ? filtered.filter(m => m.menu_type_id == menu_type_id)
+      : filtered;
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
@@ -121,7 +145,59 @@ class MenuItems extends Component {
           <Table.Body>
             <Table.Row>
               <Table.Cell style={{ paddingBottom: 0 }}>
-                <SearchTextBox onSearchButtonClick={this.handleSearching} />
+                <Table
+                  style={{
+                    border: "0px",
+                    marginBottom: "6px",
+                    marginLeft: "-4px",
+                    marginRight: "-4px"
+                  }}
+                >
+                  <Table.Body className="ui form">
+                    <Table.Row>
+                      <Table.Cell>
+                        <Input
+                          id="keyword"
+                          name="keyword"
+                          style={{ width: "100%" }}
+                          placeholder="Search by keyword"
+                        />
+                      </Table.Cell>
+
+                      <Table.Cell>
+                        <Select
+                          name="menu_type_id"
+                          id="menu_type_id"
+                          options={this.state.menu_types_dd}
+                        />
+                      </Table.Cell>
+
+                      <Table.Cell>
+                        <button
+                          onClick={() =>
+                            this.handleSearching(
+                              document.getElementById("keyword").value,
+                              document.getElementById("menu_type_id").value
+                            )
+                          }
+                          id="searcBtn"
+                          className="ui primary button"
+                          type="button"
+                        >
+                          Search
+                        </button>
+                        &nbsp;
+                        <button
+                          onClick={() => this.clearFilters()}
+                          className="ui secondary button"
+                          type="button"
+                        >
+                          Reset
+                        </button>
+                      </Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                </Table>
               </Table.Cell>
               <Table.Cell textAlign="right">
                 <Link to="/menu-items/new" className="ui primary button">

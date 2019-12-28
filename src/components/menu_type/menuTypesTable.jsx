@@ -10,14 +10,21 @@ class MenuTypesTable extends Component {
       width: "1",
       content: menuType => (
         <div>
-          <img
-            width="50"
-            src={
-              process.env.REACT_APP_BACKEND_URL +
-              "/storage/" +
-              menuType.thumbnail
-            }
-          />
+          {menuType.thumbnail != "" ? (
+            <img
+              width="50"
+              src={
+                process.env.REACT_APP_BACKEND_URL +
+                "/storage/" +
+                menuType.thumbnail
+              }
+            />
+          ) : (
+            <img
+              width="50"
+              src={process.env.REACT_APP_URL + "/white-image.png"}
+            />
+          )}
         </div>
       )
     },

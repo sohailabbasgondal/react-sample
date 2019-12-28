@@ -11,23 +11,33 @@ import BlockUi from "react-block-ui";
 
 import TableTitle from "../common/tableTitle";
 import { Table, Confirm } from "semantic-ui-react";
+import Input from "../common/input";
+import Select from "../common/select";
 
 class MenuTypes extends Component {
   state = {
     menu_types: [],
+    menu_types_dd: [],
     menuType: "",
     open: false,
     pageSize: 10,
     currentPage: 1,
     keyFieldValue: "",
     sortColumn: { path: "title", order: "asc" },
-    noRecordFound: ""
+    noRecordFound: "",
+    menu_type_id: ""
   };
 
   async componentDidMount() {
     this.setState({ blocking: true });
     const { data: menu_types } = await getMenuTypes();
-    this.setState({ menu_types, blocking: false });
+
+    const mt = [{ id: "", name: "All menu types" }];
+    for (const [index, value] of menu_types.entries()) {
+      mt.push({ id: value.id, name: value.name });
+    }
+
+    this.setState({ menu_types, blocking: false, menu_types_dd: mt });
   }
 
   handleDelete = menuType => {
@@ -66,13 +76,20 @@ class MenuTypes extends Component {
     this.setState({ currentPage: page });
   };
 
-  handleSearching = keyword => {
-    this.setState({ keyFieldValue: keyword, currentPage: 1 });
+  handleSearching = (keyword, menu_type_id) => {
+    this.setState({ keyFieldValue: keyword, menu_type_id, currentPage: 1 });
   };
 
   handleSort = sortColumn => {
     this.setState({ sortColumn });
   };
+
+  clearFilters() {
+    document.getElementById("keyword").value = "";
+    document.getElementById("menu_type_id").value = "";
+
+    document.getElementById("searcBtn").click();
+  }
 
   getPagedData = () => {
     const {
@@ -80,14 +97,19 @@ class MenuTypes extends Component {
       currentPage,
       menu_types: allMenuTypes,
       keyFieldValue,
-      sortColumn
+      sortColumn,
+      menu_type_id
     } = this.state;
 
-    const filtered = keyFieldValue
+    let filtered = keyFieldValue
       ? allMenuTypes.filter(
           m => m.name.toUpperCase().indexOf(keyFieldValue.toUpperCase()) > -1
         )
       : allMenuTypes;
+
+    filtered = menu_type_id
+      ? filtered.filter(m => m.parent_id == menu_type_id)
+      : filtered;
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
@@ -117,7 +139,59 @@ class MenuTypes extends Component {
           <Table.Body>
             <Table.Row>
               <Table.Cell style={{ paddingBottom: 0 }}>
-                <SearchTextBox onSearchButtonClick={this.handleSearching} />
+                <Table
+                  style={{
+                    border: "0px",
+                    marginBottom: "6px",
+                    marginLeft: "-4px",
+                    marginRight: "-4px"
+                  }}
+                >
+                  <Table.Body className="ui form">
+                    <Table.Row>
+                      <Table.Cell>
+                        <Input
+                          id="keyword"
+                          name="keyword"
+                          style={{ width: "100%" }}
+                          placeholder="Search by keyword"
+                        />
+                      </Table.Cell>
+
+                      <Table.Cell>
+                        <Select
+                          name="menu_type_id"
+                          id="menu_type_id"
+                          options={this.state.menu_types_dd}
+                        />
+                      </Table.Cell>
+
+                      <Table.Cell>
+                        <button
+                          onClick={() =>
+                            this.handleSearching(
+                              document.getElementById("keyword").value,
+                              document.getElementById("menu_type_id").value
+                            )
+                          }
+                          id="searcBtn"
+                          className="ui primary button"
+                          type="button"
+                        >
+                          Search
+                        </button>
+                        &nbsp;
+                        <button
+                          onClick={() => this.clearFilters()}
+                          className="ui secondary button"
+                          type="button"
+                        >
+                          Reset
+                        </button>
+                      </Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                </Table>
               </Table.Cell>
               <Table.Cell textAlign="right">
                 <Link to="/menu-types/new" className="ui primary button">

@@ -90,6 +90,11 @@ class App extends Component {
 
         <Container style={{ marginTop: "5em", width: "96%" }}>
           <Switch>
+            <ProtectedRoute
+              path="/dashboard/:outlet"
+              exact
+              component={Dashboard}
+            />
             <ProtectedRoute path="/dashboard" component={Dashboard} />
             {/* menu items recipes */}
             <ProtectedRoute

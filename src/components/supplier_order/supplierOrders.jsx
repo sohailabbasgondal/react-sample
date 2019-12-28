@@ -8,29 +8,10 @@ import { toast } from "react-toastify";
 import _ from "lodash";
 import BlockUi from "react-block-ui";
 import TableTitle from "../common/tableTitle";
-import {
-  Table,
-  Confirm,
-  Grid,
-  Card,
-  Form,
-  Button,
-  Label,
-  Statistic
-} from "semantic-ui-react";
+import { Table, Confirm, Grid } from "semantic-ui-react";
 import Input from "../common/input";
 import Select from "../common/select";
 import { getSuppliers } from "../../services/supplierService";
-import {
-  getOrderItems,
-  deleteOrderItem,
-  saveOrderItem,
-  getOrderTotal,
-  saveOrderToServer,
-  deleteAllOrderItem
-} from "../../services/orderService";
-import Counter from "../order/counter";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 class SupplierOrders extends Component {
@@ -48,7 +29,8 @@ class SupplierOrders extends Component {
     suppliers: [],
 
     keyFieldValue: "",
-    supplier_id: ""
+    supplier_id: "",
+    status: ""
   };
 
   async componentDidMount() {
@@ -99,10 +81,11 @@ class SupplierOrders extends Component {
     this.setState({ currentPage: page });
   };
 
-  handleSearching = (keyword, supplier_id) => {
+  handleSearching = (keyword, supplier_id, status) => {
     this.setState({
       keyFieldValue: keyword,
       supplier_id,
+      status,
       currentPage: 1
     });
   };
@@ -118,7 +101,8 @@ class SupplierOrders extends Component {
       orders: allOrders,
       sortColumn,
       keyFieldValue,
-      supplier_id
+      supplier_id,
+      status
     } = this.state;
 
     let filtered = allOrders;
@@ -131,6 +115,8 @@ class SupplierOrders extends Component {
       ? filtered.filter(m => m.supplier.id == supplier_id)
       : filtered;
 
+    filtered = status ? filtered.filter(m => m.status == status) : filtered;
+
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
     const orders = paginate(sorted, currentPage, pageSize);
@@ -140,6 +126,7 @@ class SupplierOrders extends Component {
   clearFilters() {
     document.getElementById("keyword").value = "";
     document.getElementById("supplier_id").value = "";
+    document.getElementById("status").value = "";
     this.setState({
       data: { supplier_id: "" }
     });
@@ -151,6 +138,11 @@ class SupplierOrders extends Component {
     const { totalCount, data: orders } = this.getPagedData();
     const { length: count } = orders.length;
     if (count === 0) return <p>There are no orders in the store.</p>;
+    const statusOptions = [
+      { id: "", name: "All status" },
+      { id: 1, name: "Pending" },
+      { id: 2, name: "Delivered" }
+    ];
 
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
@@ -198,11 +190,20 @@ class SupplierOrders extends Component {
                           </Table.Cell>
 
                           <Table.Cell>
+                            <Select
+                              name="status"
+                              id="status"
+                              options={statusOptions}
+                            />
+                          </Table.Cell>
+
+                          <Table.Cell>
                             <button
                               onClick={() =>
                                 this.handleSearching(
                                   document.getElementById("keyword").value,
-                                  document.getElementById("supplier_id").value
+                                  document.getElementById("supplier_id").value,
+                                  document.getElementById("status").value
                                 )
                               }
                               id="searcBtn"
