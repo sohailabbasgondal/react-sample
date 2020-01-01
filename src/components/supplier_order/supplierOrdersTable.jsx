@@ -3,6 +3,7 @@ import Table from "../common/table";
 import { Link } from "react-router-dom";
 import OrderTotal from "../order/orderTotal";
 import { Label } from "semantic-ui-react";
+import Currency from "../common/currency";
 
 class SupplierOrdersTable extends Component {
   columns = [
@@ -38,7 +39,7 @@ class SupplierOrdersTable extends Component {
     },
     {
       path: "total_items1",
-      label: "Estimated price",
+      label: <Currency label="Estimated price" />,
       width: "2",
       content: order => <OrderTotal key={order.id} items={order.total_items} />
     }

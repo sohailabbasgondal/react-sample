@@ -52,6 +52,19 @@ export function getOrderTotal() {
   return order;
 }
 
+export function calculateTax(tax) {
+  let orderTotal = Number(getOrderTotal());
+  let taxPercentage = Number(tax);
+  let taxAmount = (orderTotal * taxPercentage) / 100;
+  return taxAmount;
+}
+
+export function calculateGrandTotal(tax) {
+  const taxPercentage = Number(calculateTax(tax));
+  const subTotal = Number(getOrderTotal());
+  return taxPercentage + subTotal;
+}
+
 export function deleteAllOrderItem() {
   orderItems.length = 0;
 }

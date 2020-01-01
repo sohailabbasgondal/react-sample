@@ -30,7 +30,11 @@ class LoginForm extends Form {
 
       const { state } = this.props.location;
 
-      window.location = state ? state.from.pathname : "/";
+      if (auth.getCurrentUser().user_type === "kitchen") {
+        window.location = "/order-queue";
+      } else {
+        window.location = state ? state.from.pathname : "/";
+      }
     } catch (ex) {
       this.state.blocking = false;
       if (ex.response && ex.response.status === 401) {

@@ -36,6 +36,7 @@ import {
 import Counter from "../order/counter";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Currency from "../common/currency";
 
 class SupplierItems extends Component {
   state = {
@@ -396,7 +397,10 @@ class SupplierItems extends Component {
                   </div>
 
                   <Statistic color="green" size="tiny">
-                    <Statistic.Value>${getOrderTotal()}</Statistic.Value>
+                    <Statistic.Value>
+                      <Currency label="" />
+                      {getOrderTotal()}
+                    </Statistic.Value>
                     <Statistic.Label>Order</Statistic.Label>
                   </Statistic>
 

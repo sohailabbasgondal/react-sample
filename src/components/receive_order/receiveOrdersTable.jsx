@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Table from "../common/table";
 import { Link } from "react-router-dom";
-import { Icon, Button, Label, Grid } from "semantic-ui-react";
+import { Label } from "semantic-ui-react";
 import OrderTotal from "../order/orderTotal";
+import Currency from "../common/currency";
 
 class ReceiveOrdersTable extends Component {
   columns = [
@@ -38,7 +39,7 @@ class ReceiveOrdersTable extends Component {
     },
     {
       path: "total_items1",
-      label: "Estimated price",
+      label: <Currency label="Estimated price" />,
       width: "2",
       content: order => <OrderTotal key={order.id} items={order.total_items} />
     }

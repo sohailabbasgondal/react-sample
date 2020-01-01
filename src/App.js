@@ -88,7 +88,7 @@ class App extends Component {
         {user && <Navigation user={user} />}
         <ToastContainer />
 
-        <Container style={{ marginTop: "5em", width: "96%" }}>
+        <Container style={{ marginTop: "6em", width: "96%" }}>
           <Switch>
             <ProtectedRoute
               path="/dashboard/:outlet"
@@ -249,6 +249,7 @@ class App extends Component {
             <ProtectedRoute path="/pos-terminal" component={Terminal} />
             {/* order queue */}
             <ProtectedRoute path="/order-queue" component={Queue} />
+            {/* outlet settings */}
 
             <Route path="/login" component={LoginForm} />
             <Route path="/logout" component={Logout} />

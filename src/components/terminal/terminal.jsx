@@ -14,7 +14,9 @@ import {
   deleteAllOrderItem,
   saveOrderToServer,
   updateMenuDataCombinedItem,
-  loadMainMenuData
+  loadMainMenuData,
+  calculateTax,
+  calculateGrandTotal
 } from "../../services/terminalService";
 import ReactToPrint from "react-to-print";
 import {
@@ -33,6 +35,7 @@ import { toast } from "react-toastify";
 import auth from "../../services/authService";
 
 import Printing from "../order/printing";
+import Currency from "../common/currency";
 
 class Terminal extends Component {
   state = {
@@ -232,33 +235,65 @@ class Terminal extends Component {
                   </Table>
 
                   <Form>
-                    <Statistic color="green" size="tiny">
-                      <Statistic.Value>${getOrderTotal()}</Statistic.Value>
-                      <Statistic.Label>Order</Statistic.Label>
-                    </Statistic>
+                    <Grid columns={3} padded>
+                      <Grid.Column>
+                        <Statistic color="green" size="tiny">
+                          <Statistic.Value>
+                            <Currency label="" />
+                            {getOrderTotal()}
+                          </Statistic.Value>
+                          <Statistic.Label>Sub Total</Statistic.Label>
+                        </Statistic>
+                      </Grid.Column>
+                      <Grid.Column>
+                        <Statistic color="green" size="tiny">
+                          <Statistic.Value>
+                            <Currency label="" />
+                            {calculateTax(auth.getCurrentUser().tax)}
+                          </Statistic.Value>
+                          <Statistic.Label>Tax</Statistic.Label>
+                        </Statistic>
+                      </Grid.Column>
+                      <Grid.Column>
+                        <Statistic color="green" size="tiny">
+                          <Statistic.Value>
+                            <Currency label="" />
+                            {calculateGrandTotal(auth.getCurrentUser().tax)}
+                          </Statistic.Value>
+                          <Statistic.Label>Total</Statistic.Label>
+                        </Statistic>
+                      </Grid.Column>
+                    </Grid>
 
-                    <br />
-                    <Button secondary onClick={this.cancelOrder}>
-                      Cancel Order
-                    </Button>
-                    <Button primary onClick={this.saveOrder}>
-                      Submit Order
-                    </Button>
-
-                    <ReactToPrint
-                      trigger={() => (
-                        <Button
-                          style={{
-                            display:
-                              user.user_type == "cashier" ? "block" : "none"
-                          }}
-                          secondary
-                        >
-                          Print receipt
+                    <Grid columns={3} padded>
+                      <Grid.Column>
+                        {" "}
+                        <Button secondary onClick={this.cancelOrder}>
+                          Cancel
                         </Button>
-                      )}
-                      content={() => this.componentRef}
-                    />
+                      </Grid.Column>
+                      <Grid.Column>
+                        <Button primary onClick={this.saveOrder}>
+                          Submit
+                        </Button>
+                      </Grid.Column>
+                      <Grid.Column>
+                        <ReactToPrint
+                          trigger={() => (
+                            <Button
+                              style={{
+                                display:
+                                  user.user_type == "cashier" ? "block" : "none"
+                              }}
+                              secondary
+                            >
+                              Print
+                            </Button>
+                          )}
+                          content={() => this.componentRef}
+                        />
+                      </Grid.Column>
+                    </Grid>
                   </Form>
                 </Card.Content>
               </Card>

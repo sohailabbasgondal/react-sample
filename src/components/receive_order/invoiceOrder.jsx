@@ -27,6 +27,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Form from "../common/form";
 import Joi from "joi-browser";
+import Currency from "../common/currency";
 
 class InvoiceOrder extends Form {
   state = {
@@ -273,7 +274,9 @@ class InvoiceOrder extends Form {
                       </Table.Cell>
                     </Table.Row>
                     <Table.Row>
-                      <Table.Cell width={4}>Total as below</Table.Cell>
+                      <Table.Cell width={4}>
+                        <Currency label="Total as below" />
+                      </Table.Cell>
                       <Table.Cell>
                         {this.renderInput("total", "", "text")}
                       </Table.Cell>
@@ -285,13 +288,17 @@ class InvoiceOrder extends Form {
                 <Table definition>
                   <Table.Body>
                     <Table.Row>
-                      <Table.Cell width={4}>Tax</Table.Cell>
+                      <Table.Cell width={4}>
+                        <Currency label="Tax" />
+                      </Table.Cell>
                       <Table.Cell>
                         {this.renderInput("tax", "", "text")}
                       </Table.Cell>
                     </Table.Row>
                     <Table.Row>
-                      <Table.Cell width={4}>Shipping</Table.Cell>
+                      <Table.Cell width={4}>
+                        <Currency label="Shipping" />
+                      </Table.Cell>
                       <Table.Cell>
                         {this.renderInput("shipping", "", "text")}
                       </Table.Cell>
@@ -310,8 +317,12 @@ class InvoiceOrder extends Form {
               <Table.HeaderCell width={3}>Item name</Table.HeaderCell>
               <Table.HeaderCell width={2}>Item unit</Table.HeaderCell>
               <Table.HeaderCell width={1}>Order qty</Table.HeaderCell>
-              <Table.HeaderCell width={2}>Price</Table.HeaderCell>
-              <Table.HeaderCell width={2}>Total</Table.HeaderCell>
+              <Table.HeaderCell width={2}>
+                <Currency label="Price" />
+              </Table.HeaderCell>
+              <Table.HeaderCell width={2}>
+                <Currency label="Total" />
+              </Table.HeaderCell>
               <Table.HeaderCell width={2}>Received</Table.HeaderCell>
               <Table.HeaderCell width={1}>Confirm</Table.HeaderCell>
               <Table.HeaderCell width={1}>Delete</Table.HeaderCell>
@@ -347,7 +358,9 @@ class InvoiceOrder extends Form {
               <Table definition>
                 <Table.Body>
                   <Table.Row>
-                    <Table.Cell width={4}>Items total</Table.Cell>
+                    <Table.Cell width={4}>
+                      <Currency label="Items total" />
+                    </Table.Cell>
                     <Table.Cell>{this.state.items_total}</Table.Cell>
                   </Table.Row>
                   <Table.Row>
@@ -355,11 +368,15 @@ class InvoiceOrder extends Form {
                     <Table.Cell>{this.state.receivedOrder.length}</Table.Cell>
                   </Table.Row>
                   <Table.Row>
-                    <Table.Cell width={4}>Discount</Table.Cell>
+                    <Table.Cell width={4}>
+                      <Currency label="Discount" />
+                    </Table.Cell>
                     <Table.Cell>0</Table.Cell>
                   </Table.Row>
                   <Table.Row>
-                    <Table.Cell width={4}>Sub total</Table.Cell>
+                    <Table.Cell width={4}>
+                      <Currency label="Sub total" />
+                    </Table.Cell>
                     <Table.Cell>{this.state.items_total}</Table.Cell>
                   </Table.Row>
                 </Table.Body>

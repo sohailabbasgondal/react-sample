@@ -15,7 +15,9 @@ class OutletEditForm extends Form {
       address: "",
       zip: "",
       phone: "",
-      emails: ""
+      emails: "",
+      currency_symbol: "",
+      tax_percentage: ""
     },
     errors: {}
   };
@@ -38,7 +40,13 @@ class OutletEditForm extends Form {
       .label("phone"),
     emails: Joi.string()
       .required()
-      .label("emails")
+      .label("emails"),
+    currency_symbol: Joi.string()
+      .required()
+      .label("Currency symbol"),
+    tax_percentage: Joi.number()
+      .required()
+      .label("Tax")
   };
 
   async populateOutlet() {
@@ -63,7 +71,9 @@ class OutletEditForm extends Form {
       address: outlet.address,
       zip: outlet.zip,
       phone: outlet.phone,
-      emails: outlet.emails
+      emails: outlet.emails,
+      currency_symbol: outlet.currency_symbol,
+      tax_percentage: outlet.tax_percentage
     };
   }
 
@@ -125,6 +135,18 @@ class OutletEditForm extends Form {
                 </Table.Cell>
                 <Table.Cell>
                   {this.renderInput("emails", "Emails", "text")}
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>
+                  {this.renderInput(
+                    "currency_symbol",
+                    "Currency symbol",
+                    "text"
+                  )}
+                </Table.Cell>
+                <Table.Cell>
+                  {this.renderInput("tax_percentage", "Tax", "text")}
                 </Table.Cell>
               </Table.Row>
 

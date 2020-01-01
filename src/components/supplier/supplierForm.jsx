@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import BlockUi from "react-block-ui";
 import { Table } from "semantic-ui-react";
 import TableTitle from "../common/tableTitle";
+import Currency from "../common/currency";
 
 class SupplierForm extends Form {
   state = {
@@ -91,7 +92,7 @@ class SupplierForm extends Form {
                 <Table.Cell>
                   {this.renderInput(
                     "min_order_value",
-                    "Min order value",
+                    <Currency label="Min order value" />,
                     "text"
                   )}
                 </Table.Cell>

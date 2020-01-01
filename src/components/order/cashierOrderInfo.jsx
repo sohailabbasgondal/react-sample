@@ -3,6 +3,7 @@ import { getOrderDetails } from "../../services/cashierOrderService";
 import { Table, Grid } from "semantic-ui-react";
 import BlockUi from "react-block-ui";
 import OrderTotal from "./orderTotal";
+import Currency from "../common/currency";
 
 class CashierOrderInfo extends Component {
   state = {
@@ -57,7 +58,9 @@ class CashierOrderInfo extends Component {
               <Table definition>
                 <Table.Body>
                   <Table.Row>
-                    <Table.Cell width={4}>Tax</Table.Cell>
+                    <Table.Cell width={4}>
+                      <Currency label="Tax" />
+                    </Table.Cell>
                     <Table.Cell>
                       {this.state.order.tax ? this.state.order.tax : "N/A"}
                     </Table.Cell>
@@ -69,7 +72,9 @@ class CashierOrderInfo extends Component {
                     </Table.Cell>
                   </Table.Row>
                   <Table.Row>
-                    <Table.Cell width={4}>Total price</Table.Cell>
+                    <Table.Cell width={4}>
+                      <Currency label="Total price" />
+                    </Table.Cell>
                     <Table.Cell>
                       <OrderTotal
                         key={this.props.id}
@@ -89,8 +94,12 @@ class CashierOrderInfo extends Component {
               <Table.HeaderCell width={5}>Item</Table.HeaderCell>
 
               <Table.HeaderCell width={2}>Quantity</Table.HeaderCell>
-              <Table.HeaderCell width={3}>Price when order</Table.HeaderCell>
-              <Table.HeaderCell width={2}>Total</Table.HeaderCell>
+              <Table.HeaderCell width={3}>
+                <Currency label="Price when order" />
+              </Table.HeaderCell>
+              <Table.HeaderCell width={2}>
+                <Currency label="Total" />
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 

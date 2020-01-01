@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Label, Button, Icon, Table } from "semantic-ui-react";
+import Currency from "../common/currency";
 
 class Counter extends Component {
   render() {
@@ -13,7 +14,8 @@ class Counter extends Component {
           </Label>
         </Table.Cell>
         <Table.Cell width={9}>
-          {title} <br /> ${total}
+          {title} <br /> <Currency label="" />
+          {total}
         </Table.Cell>
 
         <Table.Cell width={5}>

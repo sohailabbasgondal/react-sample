@@ -10,6 +10,7 @@ import { getCategories } from "../../services/categoryService";
 import { getSuppliers } from "../../services/supplierService";
 import { getStorageAreas } from "../../services/storageAreaService";
 import { getUnits } from "../../services/unitService";
+import Currency from "../common/currency";
 
 class SupplierEditForm extends Form {
   state = {
@@ -176,7 +177,11 @@ class SupplierEditForm extends Form {
               </Table.Row>
               <Table.Row width="8">
                 <Table.Cell>
-                  {this.renderInput("price", "Price", "text")}
+                  {this.renderInput(
+                    "price",
+                    <Currency label="Price" />,
+                    "text"
+                  )}
                 </Table.Cell>
                 <Table.Cell width="8">
                   {this.renderInput("discount", "Discount", "text")}

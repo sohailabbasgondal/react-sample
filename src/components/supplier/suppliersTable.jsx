@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import RenderTable from "../common/table";
 import { Icon, Label } from "semantic-ui-react";
+import Currency from "../common/currency";
 class SuppliersTable extends Component {
   columns = [
     {
@@ -8,9 +9,13 @@ class SuppliersTable extends Component {
       label: "Name",
       width: "4"
     },
-    { path: "emails", label: "Emails", width: "6" },
+    { path: "emails", label: "Emails", width: "5" },
     { path: "phone", label: "Phone", width: "2" },
-    { path: "min_order_value", label: "Min order value", width: "2" },
+    {
+      path: "min_order_value",
+      label: <Currency label="Min order value" />,
+      width: "3"
+    },
     {
       path: "status",
       label: "Status",

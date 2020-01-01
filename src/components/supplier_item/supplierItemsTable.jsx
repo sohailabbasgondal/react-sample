@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Table from "../common/table";
 import { Link } from "react-router-dom";
 import { Icon, Button, Label, Grid } from "semantic-ui-react";
+import Currency from "../common/currency";
 
 class SupplierItemsTable extends Component {
   columns = [
@@ -15,7 +16,11 @@ class SupplierItemsTable extends Component {
     { path: "unit.name", label: "Unit", width: "3" },
     // { path: "category.name", label: "Category", width: "2" },
     // { path: "supplier.name", label: "Supplier", width: "3" },
-    { path: "price", label: "Price", width: "1" },
+    {
+      path: "price",
+      label: <Currency label="Price" />,
+      width: "1"
+    },
     { path: "stock", label: "Stock", width: "1" },
     { path: "ideal_stock", label: "Ideal Stock", width: "2" },
     {

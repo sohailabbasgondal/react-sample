@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Table from "../common/table";
 import { Icon, Label } from "semantic-ui-react";
+import Currency from "../common/currency";
 
 class MenuItemsTable extends Component {
   columns = [
@@ -41,7 +42,7 @@ class MenuItemsTable extends Component {
     },
     {
       path: "price",
-      label: "Price",
+      label: <Currency label="Price" />,
       width: "2"
     },
     {

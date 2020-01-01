@@ -18,7 +18,9 @@ class OutletForm extends Form {
       emails: "",
       contact_person: "",
       email: "",
-      password: ""
+      password: "",
+      currency_symbol: "",
+      tax_percentage: ""
     },
     errors: {}
   };
@@ -51,7 +53,13 @@ class OutletForm extends Form {
       .label("email"),
     password: Joi.string()
       .required()
-      .label("password")
+      .label("password"),
+    currency_symbol: Joi.string()
+      .required()
+      .label("Currency symbol"),
+    tax_percentage: Joi.number()
+      .required()
+      .label("Tax")
   };
 
   doSubmit = async () => {
@@ -123,7 +131,19 @@ class OutletForm extends Form {
               </Table.Row>
               <Table.Row>
                 <Table.Cell>
+                  {this.renderInput(
+                    "currency_symbol",
+                    "Currency symbol",
+                    "text"
+                  )}
+                </Table.Cell>
+                <Table.Cell>
                   {this.renderInput("password", "Password", "password")}
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>
+                  {this.renderInput("tax_percentage", "Tax", "text")}
                 </Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>

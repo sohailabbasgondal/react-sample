@@ -32,7 +32,7 @@ const Navigation = ({ user }) => {
             user.user_type === "kitchen") && (
             <Menu.Item>
               <NavLink className="nav-item nav-link" to="/order-queue">
-                Orders Queue
+                Orders Terminal
               </NavLink>
             </Menu.Item>
           )}
@@ -156,7 +156,7 @@ const Navigation = ({ user }) => {
         {user && (
           <Menu.Menu position="right">
             <Menu.Item>
-              <NavLink to="/profile">{user.name}</NavLink>
+              <NavLink to="#">{`Welcome, ${user.name}`}</NavLink>
             </Menu.Item>
             <Menu.Item>
               <NavLink to="/logout">Logout</NavLink>
