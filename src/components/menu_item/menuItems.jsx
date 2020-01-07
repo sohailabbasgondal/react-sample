@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { getMenuItems, deleteMenuItem } from "../../services/menuItemService";
+import {
+  getMenuItems,
+  deleteMenuItem,
+  updateMenuItemStatus
+} from "../../services/menuItemService";
 import { getMenuTypes } from "../../services/menuTypeService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
@@ -97,6 +101,14 @@ class MenuItems extends Component {
     document.getElementById("searcBtn").click();
   }
 
+  handleUpdateStatus = async menuItem => {
+    this.setState({ blocking: true });
+    await updateMenuItemStatus(menuItem);
+    const { data: menu_items } = await getMenuItems();
+
+    this.setState({ blocking: false, menu_items });
+  };
+
   getPagedData = () => {
     const {
       pageSize,
@@ -124,10 +136,32 @@ class MenuItems extends Component {
   };
 
   render() {
+    const emtpyUrl = process.env.REACT_APP_URL + "/empty1.png";
     const { pageSize, currentPage, sortColumn } = this.state;
     const { totalCount, data: menu_items } = this.getPagedData();
     const { length: count } = menu_items.length;
-    if (count === 0) return <p>There are no menu items in the store.</p>;
+
+    if (this.state.menu_items.length === 0) {
+      return (
+        <BlockUi
+          tag="div"
+          blocking={this.state.blocking}
+          style={{ display: this.state.blocking ? "none" : "block" }}
+        >
+          <div>
+            <center>
+              <img src={emtpyUrl} />
+              <div>
+                <p>Menu items not added yet.</p>
+                <Link to="/menu-items/new" className="ui primary button">
+                  New menu item
+                </Link>
+              </div>
+            </center>
+          </div>
+        </BlockUi>
+      );
+    }
 
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
@@ -217,6 +251,7 @@ class MenuItems extends Component {
           onUpdate={this.handleUpdate}
           onRecipeUpdate={this.handleRecipeUpdate}
           onSort={this.handleSort}
+          onStatusUpdate={this.handleUpdateStatus}
         />
         <Pagination
           itemsCount={totalCount}

@@ -29,6 +29,14 @@ export function updateMenuItem(menuItem, menuItemId) {
   return http.post(menuItemStoreUrl(menuItemId), menuItem, headers);
 }
 
+export function updateMenuItemStatus(menuItem) {
+  return http.get(
+    `/outlet/${auth.getCurrentUser().outlet_id}/menu-items/${
+      menuItem.id
+    }/status`
+  );
+}
+
 export function getMenuItem(menuItemId) {
   return http.get(menuItemStoreUrl(menuItemId));
 }

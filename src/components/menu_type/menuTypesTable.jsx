@@ -39,7 +39,7 @@ class MenuTypesTable extends Component {
     {
       path: "name",
       label: "Name",
-      width: "11"
+      width: "10"
     },
     {
       path: "status",
@@ -55,9 +55,15 @@ class MenuTypesTable extends Component {
 
     {
       key: "actions",
-      width: "1",
+      width: "2",
       content: menuType => (
         <div>
+          <Icon
+            name={menuType.status == 1 ? "hide" : "eye"}
+            color={menuType.status == 1 ? "black" : "green"}
+            className="clickable"
+            onClick={() => this.props.onStatusUpdate(menuType)}
+          />
           <Icon
             name="trash"
             color="red"

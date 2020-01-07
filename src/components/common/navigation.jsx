@@ -53,6 +53,18 @@ const Navigation = ({ user }) => {
           </Menu.Item>
         )}
 
+        {user && user.user_type === "client" && (
+          <Dropdown item simple text="Billing">
+            <Dropdown.Menu>
+              <Dropdown.Item>
+                <NavLink style={{ color: "#000" }} to="/my-invoices">
+                  My Invoices
+                </NavLink>
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
+
         {user && user.user_type === "store-manager" && (
           <React.Fragment>
             <Menu.Item>

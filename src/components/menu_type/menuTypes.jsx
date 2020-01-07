@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { getMenuTypes, deleteMenuType } from "../../services/menuTypeService";
+import {
+  getMenuTypes,
+  deleteMenuType,
+  updateMenuTypeStatus
+} from "../../services/menuTypeService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import SearchTextBox from "../common/searchTextBox";
@@ -91,6 +95,14 @@ class MenuTypes extends Component {
     document.getElementById("searcBtn").click();
   }
 
+  handleUpdateStatus = async menuType => {
+    this.setState({ blocking: true });
+    await updateMenuTypeStatus(menuType);
+    const { data: menu_types } = await getMenuTypes();
+
+    this.setState({ blocking: false, menu_types });
+  };
+
   getPagedData = () => {
     const {
       pageSize,
@@ -118,11 +130,32 @@ class MenuTypes extends Component {
   };
 
   render() {
+    const emtpyUrl = process.env.REACT_APP_URL + "/empty1.png";
     const { pageSize, currentPage, sortColumn } = this.state;
     const { totalCount, data: menu_types } = this.getPagedData();
     const { length: count } = menu_types.length;
-    if (count === 0) return <p>There are no menu types in the store.</p>;
 
+    if (this.state.menu_types.length === 0) {
+      return (
+        <BlockUi
+          tag="div"
+          blocking={this.state.blocking}
+          style={{ display: this.state.blocking ? "none" : "block" }}
+        >
+          <div>
+            <center>
+              <img src={emtpyUrl} />
+              <div>
+                <p>Menu types not added yet.</p>
+                <Link to="/menu-types/new" className="ui primary button">
+                  New menu type
+                </Link>
+              </div>
+            </center>
+          </div>
+        </BlockUi>
+      );
+    }
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Confirm
@@ -210,6 +243,7 @@ class MenuTypes extends Component {
           onDelete={this.handleDelete}
           onUpdate={this.handleUpdate}
           onSort={this.handleSort}
+          onStatusUpdate={this.handleUpdateStatus}
         />
         <Pagination
           itemsCount={totalCount}

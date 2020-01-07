@@ -16,8 +16,12 @@ import {
   updateMenuDataCombinedItem,
   loadMainMenuData,
   calculateTax,
-  calculateGrandTotal
+  calculateGrandTotal,
+  populateEditOrder,
+  deleteMenuData,
+  updateOrderToServer
 } from "../../services/terminalService";
+import { getOrderDetails } from "../../services/cashierOrderService";
 import ReactToPrint from "react-to-print";
 import {
   Grid,
@@ -46,14 +50,22 @@ class Terminal extends Component {
     orderType: "dine-in",
     back: "root",
     paymentType: "cash",
-    user: []
+    user: [],
+    editOrderId: ""
   };
 
   async componentDidMount() {
     const user = auth.getCurrentUser();
-
+    if (this.props.match.params.id) {
+      const { data: order } = await getOrderDetails(this.props.match.params.id);
+      populateEditOrder(order.total_items);
+      this.setState({ editOrderId: order.id, orderType: order.order_type });
+    } else {
+      deleteAllOrderItem();
+    }
     this.setState({ user });
     this.setState({ blocking: true });
+    deleteMenuData();
     const { data: menu_types } = await getMenuTypes();
     let visible_menu_types = saveMenuDataItem(menu_types);
     this.setState({
@@ -82,16 +94,25 @@ class Terminal extends Component {
   saveOrder = async () => {
     this.setState({ blocking: true });
 
+    let msg = "";
     let data = {
       items: this.state.orderItems,
       orderType: this.state.orderType,
-      orderTotal: getOrderTotal()
+      orderTotal: getOrderTotal(),
+      orderTax: calculateTax(auth.getCurrentUser().tax)
     };
 
-    await saveOrderToServer(data);
+    if (this.state.editOrderId) {
+      data._method = "PUT";
+      await updateOrderToServer(data, this.state.editOrderId);
+      msg = "Order has been updated successfully.";
+    } else {
+      await saveOrderToServer(data);
+      msg = "Order has been placed successfully.";
+    }
 
     this.setState({ blocking: false });
-    toast.success("Order has been placed successfully.");
+    toast.success(msg);
     deleteAllOrderItem();
     this.loadOrderItems();
     this.handleBack();
@@ -155,6 +176,7 @@ class Terminal extends Component {
   };
 
   cancelOrder = () => {
+    this.setState({ editOrderId: "" });
     deleteAllOrderItem();
     this.loadOrderItems();
     this.handleBack();
@@ -274,7 +296,7 @@ class Terminal extends Component {
                       </Grid.Column>
                       <Grid.Column>
                         <Button primary onClick={this.saveOrder}>
-                          Submit
+                          {this.state.editOrderId == "" ? "Submit" : "Update"}
                         </Button>
                       </Grid.Column>
                       <Grid.Column>
@@ -379,6 +401,8 @@ class Terminal extends Component {
               <Printing
                 order={this.state.orderItems}
                 total={getOrderTotal()}
+                tax={calculateTax(auth.getCurrentUser().tax)}
+                grand={calculateGrandTotal(auth.getCurrentUser().tax)}
                 ref={el => (this.componentRef = el)}
               />
             </Grid.Column>

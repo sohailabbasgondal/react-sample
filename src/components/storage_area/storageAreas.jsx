@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import {
   getStorageAreas,
-  deleteStorageArea
+  deleteStorageArea,
+  updateStorageAreaStatus
 } from "../../services/storageAreaService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
@@ -91,6 +92,14 @@ class StorageAreas extends Component {
     this.setState({ sortColumn });
   };
 
+  handleUpdateStatus = async storgeArea => {
+    this.setState({ blocking: true });
+    await updateStorageAreaStatus(storgeArea);
+    const { data: storage_areas } = await getStorageAreas();
+
+    this.setState({ blocking: false, storage_areas });
+  };
+
   getPagedData = () => {
     const {
       pageSize,
@@ -118,6 +127,28 @@ class StorageAreas extends Component {
     const { totalCount, data: storage_areas } = this.getPagedData();
     const otherShow = show === "none" ? "block" : "none";
 
+    if (this.state.storage_areas.length === 0) {
+      return (
+        <BlockUi
+          tag="div"
+          blocking={this.state.blocking}
+          style={{ display: this.state.blocking ? "none" : "block" }}
+        >
+          <div>
+            <center>
+              <img src={emtpyUrl} />
+              <div>
+                <p>Storage Areas not added yet.</p>
+                <Link to="/storage-areas/new" className="ui primary button">
+                  New Storage Area
+                </Link>
+              </div>
+            </center>
+          </div>
+        </BlockUi>
+      );
+    }
+
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Confirm
@@ -129,18 +160,6 @@ class StorageAreas extends Component {
           size="mini"
         />
         <TableTitle title="Storage Areas" icon="tag" />
-
-        <div style={{ display: show }}>
-          <center>
-            <img src={emtpyUrl} />
-            <div>
-              <p>Storage Areas not added yet.</p>
-              <Link to="/storage-areas/new" className="ui primary button">
-                New Storage Area
-              </Link>
-            </div>
-          </center>
-        </div>
 
         <div style={{ display: otherShow }}>
           <Table>
@@ -166,6 +185,7 @@ class StorageAreas extends Component {
             onDelete={this.handleDelete}
             onUpdate={this.handleUpdate}
             onSort={this.handleSort}
+            onStatusUpdate={this.handleUpdateStatus}
           />
           <Pagination
             itemsCount={totalCount}

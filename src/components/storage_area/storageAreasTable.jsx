@@ -27,6 +27,13 @@ class StorageAreasTable extends Component {
       content: storageArea => (
         <div>
           <Icon
+            name={storageArea.status == 1 ? "hide" : "eye"}
+            color={storageArea.status == 1 ? "black" : "green"}
+            className="clickable"
+            onClick={() => this.props.onStatusUpdate(storageArea)}
+          />
+
+          <Icon
             name="trash"
             color="red"
             className="clickable"

@@ -28,6 +28,14 @@ export function updateMenuType(menuType, menuTypeId) {
   return http.post(menuTypeStoreUrl(menuTypeId), menuType, config);
 }
 
+export function updateMenuTypeStatus(menuType) {
+  return http.get(
+    `/outlet/${auth.getCurrentUser().outlet_id}/menu-types/${
+      menuType.id
+    }/status`
+  );
+}
+
 export function getMenuType(menuTypeId) {
   return http.get(menuTypeStoreUrl(menuTypeId));
 }

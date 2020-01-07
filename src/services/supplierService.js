@@ -22,6 +22,12 @@ export function updateSupplier(supplier) {
   return http.put(supplierStoreUrl(supplier.id), supplier);
 }
 
+export function updateSupplierStatus(supplier) {
+  return http.get(
+    `/outlet/${auth.getCurrentUser().outlet_id}/suppliers/${supplier.id}/status`
+  );
+}
+
 export function getSupplier(supplierId) {
   return http.get(supplierStoreUrl(supplierId));
 }

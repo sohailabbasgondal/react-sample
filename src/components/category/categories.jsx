@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { getCategories, deleteCategory } from "../../services/categoryService";
+import {
+  getCategories,
+  deleteCategory,
+  updateCategoryStatus
+} from "../../services/categoryService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import SearchTextBox from "../common/searchTextBox";
@@ -82,6 +86,14 @@ class Categories extends Component {
     this.setState({ sortColumn });
   };
 
+  handleUpdateStatus = async category => {
+    this.setState({ blocking: true });
+    await updateCategoryStatus(category);
+    const { data: categories } = await getCategories();
+
+    this.setState({ blocking: false, categories });
+  };
+
   getPagedData = () => {
     const {
       pageSize,
@@ -110,6 +122,28 @@ class Categories extends Component {
 
     const otherShow = show === "none" ? "block" : "none";
 
+    if (this.state.categories.length === 0) {
+      return (
+        <BlockUi
+          tag="div"
+          blocking={this.state.blocking}
+          style={{ display: this.state.blocking ? "none" : "block" }}
+        >
+          <div>
+            <center>
+              <img src={emtpyUrl} />
+              <div>
+                <p>Categories not added yet.</p>
+                <Link to="/categories/new" className="ui primary button">
+                  New Category
+                </Link>
+              </div>
+            </center>
+          </div>
+        </BlockUi>
+      );
+    }
+
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Confirm
@@ -122,18 +156,6 @@ class Categories extends Component {
         />
 
         <TableTitle title="Categories" icon="tag" />
-
-        <div style={{ display: show }}>
-          <center>
-            <img src={emtpyUrl} />
-            <div>
-              <p>Categories not added yet.</p>
-              <Link to="/categories/new" className="ui primary button">
-                New Category
-              </Link>
-            </div>
-          </center>
-        </div>
 
         <div style={{ display: otherShow }}>
           <Table>
@@ -159,6 +181,7 @@ class Categories extends Component {
             onDelete={this.handleDelete}
             onUpdate={this.handleUpdate}
             onSort={this.handleSort}
+            onStatusUpdate={this.handleUpdateStatus}
           />
           <Pagination
             itemsCount={totalCount}

@@ -24,6 +24,14 @@ export function updateStorageArea(storageArea) {
   return http.put(storageAreaStoreUrl(storageArea.id), storageArea);
 }
 
+export function updateStorageAreaStatus(storageArea) {
+  return http.get(
+    `/outlet/${auth.getCurrentUser().outlet_id}/storage-areas/${
+      storageArea.id
+    }/status`
+  );
+}
+
 export function getStorageArea(storageAreaId) {
   return http.get(storageAreaStoreUrl(storageAreaId));
 }

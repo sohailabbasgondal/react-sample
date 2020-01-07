@@ -63,6 +63,12 @@ class MenuItemsTable extends Component {
       content: menuItem => (
         <div>
           <Icon
+            name={menuItem.status == 1 ? "hide" : "eye"}
+            color={menuItem.status == 1 ? "black" : "green"}
+            className="clickable"
+            onClick={() => this.props.onStatusUpdate(menuItem)}
+          />
+          <Icon
             name="trash"
             color="red"
             className="clickable"

@@ -4,7 +4,7 @@ import Currency from "../common/currency";
 
 class Counter extends Component {
   render() {
-    const { title, id, qty, total } = this.props.item;
+    const { title, id, qty, total, removeDeleteIcon = false } = this.props.item;
 
     return (
       <Table.Row>
@@ -33,7 +33,12 @@ class Counter extends Component {
           </Button>
         </Table.Cell>
         <Table.Cell width={1}>
-          <Icon onClick={() => this.props.onDelete(id)} link name="close" />
+          <Icon
+            style={{ display: removeDeleteIcon === true ? "none" : "block" }}
+            onClick={() => this.props.onDelete(id)}
+            link
+            name="close"
+          />
         </Table.Cell>
       </Table.Row>
     );

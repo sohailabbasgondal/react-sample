@@ -5,6 +5,7 @@ import { Card, Table, Button } from "semantic-ui-react";
 import BlockUi from "react-block-ui";
 import { toast } from "react-toastify";
 import auth from "../../services/authService";
+import { NavLink } from "react-router-dom";
 
 class Queue extends Component {
   state = {
@@ -114,13 +115,21 @@ class Queue extends Component {
               </Card.Content>
               <Card.Content extra>
                 {order.status == 1 ? (
-                  <Button
-                    className="fluid"
-                    onClick={() => this.handleOrder(order.id, 2)}
-                    color="green"
-                  >
-                    Start Preparing
-                  </Button>
+                  <React.Fragment>
+                    <Button
+                      onClick={() => this.handleOrder(order.id, 2)}
+                      color="green"
+                    >
+                      Start Preparing
+                    </Button>
+
+                    <NavLink
+                      className="ui yellow button"
+                      to={`/pos-terminal/${order.id}`}
+                    >
+                      Edit
+                    </NavLink>
+                  </React.Fragment>
                 ) : (
                   <Button
                     color="yellow"

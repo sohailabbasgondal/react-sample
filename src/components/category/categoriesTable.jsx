@@ -28,6 +28,13 @@ class CategoriesTable extends Component {
       content: category => (
         <div>
           <Icon
+            name={category.status == 1 ? "hide" : "eye"}
+            color={category.status == 1 ? "black" : "green"}
+            className="clickable"
+            onClick={() => this.props.onStatusUpdate(category)}
+          />
+
+          <Icon
             name="trash"
             color="red"
             className="clickable"

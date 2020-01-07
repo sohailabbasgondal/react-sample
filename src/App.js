@@ -59,6 +59,8 @@ import KitchenEditForm from "./components/kitchen/kitchenEditForm";
 import CashierOrders from "./components/cashier_order/cashierOrders";
 import CashierOrderDetail from "./components/cashier_order/cashierOrderDetail";
 
+import Invoices from "./components/billing/invoices";
+
 import Terminal from "./components/terminal/terminal";
 
 import Queue from "./components/queue/queue";
@@ -119,6 +121,11 @@ class App extends Component {
               component={OutletEditManagerForm}
             />
             <ProtectedRoute component={Outlets} path="/outlets" />
+
+            {/* Billign routes */}
+
+            <ProtectedRoute component={Invoices} path="/my-invoices" />
+
             {/* Suppliers routes */}
             <ProtectedRoute
               exact
@@ -246,7 +253,13 @@ class App extends Component {
             />
             <ProtectedRoute path="/cashiers-orders" component={CashierOrders} />
             {/* pos terminal */}
-            <ProtectedRoute path="/pos-terminal" component={Terminal} />
+            <ProtectedRoute
+              exact
+              path="/pos-terminal/:id"
+              component={Terminal}
+            />
+            <ProtectedRoute exact path="/pos-terminal" component={Terminal} />
+
             {/* order queue */}
             <ProtectedRoute path="/order-queue" component={Queue} />
             {/* outlet settings */}

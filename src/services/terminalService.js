@@ -45,6 +45,19 @@ export function saveOrderItem(item) {
   return itemInDb;
 }
 
+export function populateEditOrder(data) {
+  orderItems.length = 0;
+  for (const [index, value] of data.entries()) {
+    let itemInDb = {};
+    itemInDb.id = value.menu_item.id;
+    itemInDb.qty = value.qty;
+    itemInDb.title = value.menu_item.name;
+    itemInDb.price = value.price_when_order;
+    itemInDb.total = Number(value.price_when_order * value.qty);
+    orderItems.push(itemInDb);
+  }
+}
+
 export function getOrderTotal() {
   let order = 0;
   orderItems.map(item => (order = order + Number(item.total)));
@@ -90,6 +103,10 @@ export function getMenuTypes() {
 
 export function saveOrderToServer(data) {
   return http.post(orderStoreUrl(), data);
+}
+
+export function updateOrderToServer(data, id) {
+  return http.post(orderStoreUrl(id), data);
 }
 
 /* menu and items handling */
@@ -161,6 +178,9 @@ export function updateMenuDataOuterItem(id) {
 
   populateData(itemInDb.items);
   return visibleMenuData;
+}
+export function deleteMenuData() {
+  menuData.length = 0;
 }
 
 export function updateMenuDataCombinedItem(types, items) {

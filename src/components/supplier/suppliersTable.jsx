@@ -14,7 +14,7 @@ class SuppliersTable extends Component {
     {
       path: "min_order_value",
       label: <Currency label="Min order value" />,
-      width: "3"
+      width: "2"
     },
     {
       path: "status",
@@ -29,9 +29,15 @@ class SuppliersTable extends Component {
     },
     {
       key: "actions",
-      width: "1",
+      width: "2",
       content: supplier => (
         <div>
+          <Icon
+            name={supplier.status == 1 ? "hide" : "eye"}
+            color={supplier.status == 1 ? "black" : "green"}
+            className="clickable"
+            onClick={() => this.props.onStatusUpdate(supplier)}
+          />
           <Icon
             name="trash"
             color="red"

@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { getSuppliers, deleteSupplier } from "../../services/supplierService";
+import {
+  getSuppliers,
+  deleteSupplier,
+  updateSupplierStatus
+} from "../../services/supplierService";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import SearchTextBox from "../common/searchTextBox";
@@ -81,6 +85,14 @@ class Suppliers extends Component {
     this.setState({ sortColumn });
   };
 
+  handleUpdateStatus = async supplier => {
+    this.setState({ blocking: true });
+    await updateSupplierStatus(supplier);
+    const { data: suppliers } = await getSuppliers();
+
+    this.setState({ blocking: false, suppliers });
+  };
+
   getPagedData = () => {
     const {
       pageSize,
@@ -107,6 +119,29 @@ class Suppliers extends Component {
     const { pageSize, currentPage, sortColumn, show } = this.state;
     const { totalCount, data: suppliers } = this.getPagedData();
     const otherShow = show === "none" ? "block" : "none";
+
+    if (this.state.suppliers.length === 0) {
+      return (
+        <BlockUi
+          tag="div"
+          blocking={this.state.blocking}
+          style={{ display: this.state.blocking ? "none" : "block" }}
+        >
+          <div>
+            <center>
+              <img src={emtpyUrl} />
+              <div>
+                <p>Suppliers not added yet.</p>
+                <Link to="/suppliers/new" className="ui primary button">
+                  New Supplier
+                </Link>
+              </div>
+            </center>
+          </div>
+        </BlockUi>
+      );
+    }
+
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
         <Confirm
@@ -118,17 +153,6 @@ class Suppliers extends Component {
           size="mini"
         />
         <TableTitle title="Suppliers" icon="tag" />
-        <div style={{ display: show }}>
-          <center>
-            <img src={emtpyUrl} />
-            <div>
-              <p>Suppliers not added yet.</p>
-              <Link to="/suppliers/new" className="ui primary button">
-                New Supplier
-              </Link>
-            </div>
-          </center>
-        </div>
 
         <div style={{ display: otherShow }}>
           <Table>
@@ -154,6 +178,7 @@ class Suppliers extends Component {
             onDelete={this.handleDelete}
             onUpdate={this.handleUpdate}
             onSort={this.handleSort}
+            onStatusUpdate={this.handleUpdateStatus}
           />
           <Pagination
             itemsCount={totalCount}

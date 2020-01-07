@@ -23,6 +23,14 @@ export function updateCategory(category) {
   return http.put(categoryStoreUrl(category.id), category);
 }
 
+export function updateCategoryStatus(category) {
+  return http.get(
+    `/outlet/${auth.getCurrentUser().outlet_id}/categories/${
+      category.id
+    }/status`
+  );
+}
+
 export function getCategory(category) {
   return http.get(categoryStoreUrl(category));
 }
