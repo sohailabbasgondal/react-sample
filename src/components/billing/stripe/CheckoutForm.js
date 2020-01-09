@@ -4,27 +4,31 @@ import CardSection from "./CardSection";
 import { Grid, Button } from "semantic-ui-react";
 import { payNow } from "../../../services/billingOrderService";
 import BlockUi from "react-block-ui";
+import auth from "../../../services/authService";
+import { Link, withRouter } from "react-router-dom";
 
-class CheckoutForm extends Component {
+class CheckoutForm extends React.Component {
   state = {};
+
   handleSubmit = async ev => {
     ev.preventDefault();
 
-    this.setState({ blocking: true });
-
     const { token } = await this.props.stripe.createToken();
 
-    await payNow(token.id);
+    if (token != undefined) {
+      this.setState({ blocking: true });
 
-    this.setState({ blocking: false });
+      await payNow(token.id);
+      auth.refresh();
 
-    window.location = "/outlets";
+      this.setState({ blocking: false });
+    }
   };
 
   render() {
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
-        <form onSubmit={this.handleSubmit}>
+        <form id="formPay" onSubmit={this.handleSubmit}>
           <Grid>
             <Grid.Row>
               <Grid.Column width={16}>

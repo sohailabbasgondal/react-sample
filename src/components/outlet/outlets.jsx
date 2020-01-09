@@ -152,7 +152,7 @@ class Outlets extends Component {
     const { pageSize, currentPage, sortColumn } = this.state;
     const { totalCount, data: outlets } = this.getPagedData();
 
-    if (this.state.outlets.length === 0) {
+    if (this.state.outlets.length === 0 && checkIfSubscribed()) {
       return (
         <BlockUi
           tag="div"

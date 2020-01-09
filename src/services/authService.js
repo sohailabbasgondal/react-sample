@@ -14,6 +14,14 @@ export async function login(email, password) {
   localStorage.setItem("token", jwt);
 }
 
+export async function refresh() {
+  const { data: jwt } = await http.get(
+    process.env.REACT_APP_API_AUTH_URL + "/refresh"
+  );
+  localStorage.setItem("token", jwt);
+  window.location = "/dashboard";
+}
+
 export function logout() {
   localStorage.removeItem("token");
 }
@@ -35,5 +43,6 @@ export default {
   login,
   logout,
   getCurrentUser,
-  getJwt
+  getJwt,
+  refresh
 };

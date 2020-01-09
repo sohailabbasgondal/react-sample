@@ -18,7 +18,10 @@ export function initilizeData() {
 }
 
 export function checkIfSubscribed() {
-  if (auth.getCurrentUser().subscription_id === null) {
+  if (
+    auth.getCurrentUser().subscription_id === null ||
+    auth.getCurrentUser().subscription_id === ""
+  ) {
     return false;
   }
   return true;
@@ -59,8 +62,15 @@ export function saveOrderItem(item) {
 }
 
 /* server calls */
-
 export function payNow(token) {
   orderItems[0].token = token;
   return http.post("/payments/pay ", orderItems);
+}
+
+export function subscriptionInfo() {
+  return http.get("/payments/subscription-info");
+}
+
+export function cancelSubscription() {
+  return http.get("/payments/cancel-subscription");
 }

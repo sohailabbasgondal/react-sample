@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Statistic, Grid, Message, Button } from "semantic-ui-react";
+import {
+  Statistic,
+  Grid,
+  Message,
+  Button,
+  Table,
+  Header,
+  Label
+} from "semantic-ui-react";
 import {
   getGeneralReport,
   getOrdersBySuppliersReport,
@@ -17,21 +25,40 @@ import BlockUi from "react-block-ui";
 import TableTitle from "./common/tableTitle";
 import auth from "../services/authService";
 
+import {
+  subscriptionInfo,
+  cancelSubscription
+} from "../services/billingOrderService";
+import Currency from "./common/currency";
+
 class Dashboard extends Component {
   state = {
     report: { outlet_account: [] },
     totalCashiers: 0,
     totalWaiters: 0,
     dashboard: "customer",
-    outletid: ""
+    outletid: "",
+    subscription: { plan: {}, trial_start: " " }
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     if (auth.getCurrentUser().user_type === "store-manager") {
       this.setState({ dashboard: "outlet" });
       this.loadDashboard(auth.getCurrentUser().outlet_id);
     }
+
+    if (auth.getCurrentUser().user_type === "client") {
+      this.loadSubscriptionData();
+    }
   }
+
+  loadSubscriptionData = async () => {
+    this.setState({
+      blocking: true
+    });
+    const { data: subscription } = await subscriptionInfo();
+    this.setState({ subscription, blocking: false });
+  };
 
   loadDashboard = async outletId => {
     this.setState({
@@ -197,13 +224,23 @@ class Dashboard extends Component {
     this.setState({ dashboard: "customer" });
   };
 
+  handleCancelSubscription = async () => {
+    this.setState({ blocking: true });
+
+    await cancelSubscription();
+    auth.refresh();
+
+    this.setState({ blocking: false });
+  };
+
   render() {
     let {
       report,
       totalWaiters,
       totalCashiers,
       dashboard,
-      outletid
+      outletid,
+      subscription
     } = this.state;
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
@@ -426,8 +463,101 @@ class Dashboard extends Component {
             </Grid.Row>
           </Grid>
         </div>
-        <div style={{ display: dashboard == "customer" ? "block" : "none" }}>
-          <TableTitle title="Statistics" icon="tag" />
+        <div
+          style={{
+            display:
+              dashboard === "customer" && auth.getCurrentUser().subscription_id
+                ? "block"
+                : "none"
+          }}
+        >
+          <TableTitle title="Subscription detail" icon="tag" />
+          <Table celled padded>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell singleLine width={3}>
+                  Product/Service
+                </Table.HeaderCell>
+                <Table.HeaderCell width={3}>Price</Table.HeaderCell>
+                <Table.HeaderCell width={2}>Billing cycle</Table.HeaderCell>
+                <Table.HeaderCell width={2}>Due date</Table.HeaderCell>
+                <Table.HeaderCell width={3}>Status</Table.HeaderCell>
+                <Table.HeaderCell width={3}></Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell>
+                  {subscription.plan.nickname}
+                  <br />
+                  No of outlets: {subscription.quantity}
+                </Table.Cell>
+                <Table.Cell>
+                  <Currency val="" />
+                  {Number(
+                    (subscription.quantity * subscription.plan.amount) / 100
+                  )}
+                  <br />
+                  <Label>
+                    {auth.getCurrentUser().card_type}
+                    <Label.Detail>
+                      {" "}
+                      {auth.getCurrentUser().card_digits}
+                    </Label.Detail>
+                  </Label>
+                </Table.Cell>
+                <Table.Cell>{subscription.plan.interval}</Table.Cell>
+                <Table.Cell>{subscription.upcoming_invoice}</Table.Cell>
+                <Table.Cell>
+                  <div
+                    style={{
+                      display:
+                        subscription.trial_start &&
+                        subscription.status != "canceled"
+                          ? "block"
+                          : "none"
+                    }}
+                  >
+                    Trial started: {subscription.trial_start}
+                    <br />
+                    Trial end: {subscription.trial_end}
+                  </div>
+                  <div
+                    style={{
+                      display:
+                        subscription.trial_start &&
+                        subscription.status === "canceled"
+                          ? "none"
+                          : "block"
+                    }}
+                  >
+                    <Label color="green">{subscription.status}</Label>
+                  </div>
+
+                  <div
+                    style={{
+                      display:
+                        subscription.status === "canceled" ? "block" : "none"
+                    }}
+                  >
+                    <Label color="red">Cancelled</Label>
+                  </div>
+                </Table.Cell>
+                <Table.Cell>
+                  <Button
+                    style={{
+                      display:
+                        subscription.status != "canceled" ? "block" : "none"
+                    }}
+                    onClick={this.handleCancelSubscription}
+                    content="Cancel subscription"
+                    primary
+                  />
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
         </div>
       </BlockUi>
     );

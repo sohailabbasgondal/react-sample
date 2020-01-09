@@ -33,7 +33,11 @@ class LoginForm extends Form {
       if (auth.getCurrentUser().user_type === "kitchen") {
         window.location = "/order-queue";
       } else {
-        window.location = state ? state.from.pathname : "/";
+        if (auth.getCurrentUser().subscription_id) {
+          window.location = state ? state.from.pathname : "/";
+        } else {
+          window.location = state ? state.from.pathname : "/outlets";
+        }
       }
     } catch (ex) {
       this.state.blocking = false;
