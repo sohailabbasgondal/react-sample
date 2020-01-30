@@ -1,24 +1,24 @@
 import http from "./httpService";
 import auth from "./authService";
 
-export function getGeneralReport(outletId) {
-  return http.get(`/outlet/${outletId}/reports/general`);
+export function getGeneralReport(companyId) {
+  return http.get(`/companies/${companyId}/reports/general`);
 }
 
 export function getOrdersBySuppliersReport(outletId) {
-  return http.get(`/outlet/${outletId}/reports/orders-by-supplier`);
+  return http.get(`/companies/${outletId}/reports/orders-by-supplier`);
 }
 
 export function getPendingOrdersBySuppliersReport(outletId) {
-  return http.get(`/outlet/${outletId}/reports/pending-orders-by-supplier`);
+  return http.get(`/companies/${outletId}/reports/pending-orders-by-supplier`);
 }
 
 export function getOrdersValueBySuppliersReport(outletId) {
-  return http.get(`/outlet/${outletId}/reports/orders-value-by-supplier`);
+  return http.get(`/companies/${outletId}/reports/orders-value-by-supplier`);
 }
 
 export function getItemsByCategoiresReport(outletId) {
-  return http.get(`/outlet/${outletId}/reports/items-by-categoires`);
+  return http.get(`/companies/${outletId}/reports/items-by-categoires`);
 }
 
 export function getItemsByStorageAreasReport(outletId) {

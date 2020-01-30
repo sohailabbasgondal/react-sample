@@ -28,17 +28,7 @@ class LoginForm extends Form {
       await auth.login(data.username, data.password);
       this.state.blocking = false;
 
-      const { state } = this.props.location;
-
-      if (auth.getCurrentUser().user_type === "kitchen") {
-        window.location = "/order-queue";
-      } else {
-        if (auth.getCurrentUser().subscription_id) {
-          window.location = state ? state.from.pathname : "/";
-        } else {
-          window.location = state ? state.from.pathname : "/outlets";
-        }
-      }
+      window.location = "/dashboard";
     } catch (ex) {
       this.state.blocking = false;
       if (ex.response && ex.response.status === 401) {
@@ -50,7 +40,7 @@ class LoginForm extends Form {
   };
 
   render() {
-    const logoUrl = process.env.REACT_APP_URL + "/logo.png";
+    const logoUrl = process.env.REACT_APP_URL + "/logo.jpg";
     if (auth.getCurrentUser()) return <Redirect to="/dashboard" />;
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>

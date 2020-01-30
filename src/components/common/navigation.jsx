@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Container, Image, Menu, Dropdown } from "semantic-ui-react";
 
 const Navigation = ({ user }) => {
-  const logoUrl = process.env.REACT_APP_URL + "/logo.png";
+  const logoUrl = process.env.REACT_APP_URL + "/logo.jpg";
   return (
     <Menu fixed="top" inverted>
       <Container>
@@ -13,158 +13,148 @@ const Navigation = ({ user }) => {
             style={{ marginRight: "1.5em", height: "30px" }}
           />
         </Menu.Item>
+        <Menu.Item>
+          <NavLink className="nav-item nav-link" to="/dashboard">
+            Dashboard
+          </NavLink>
+        </Menu.Item>
 
-        {user &&
-          (user.user_type === "store-manager" ||
-            user.user_type === "cashier" ||
-            user.user_type === "client" ||
-            user.user_type === "waiter") && (
-            <Menu.Item>
-              <NavLink className="nav-item nav-link" to="/dashboard">
-                Dashboard
-              </NavLink>
-            </Menu.Item>
-          )}
-
-        {user &&
-          (user.user_type === "cashier" ||
-            user.user_type === "waiter" ||
-            user.user_type === "kitchen") && (
-            <Menu.Item>
-              <NavLink className="nav-item nav-link" to="/order-queue">
-                Orders Terminal
-              </NavLink>
-            </Menu.Item>
-          )}
-
-        {user && (user.user_type === "cashier" || user.user_type === "waiter") && (
+        {user && user.role === "client" && (
           <Menu.Item>
-            <NavLink className="nav-item nav-link" to="/pos-terminal">
-              Terminal
+            <NavLink className="nav-item nav-link" to="/companies">
+              Companies
             </NavLink>
           </Menu.Item>
         )}
 
-        {user && user.user_type === "client" && (
+        {user && user.role === "salary-admin" && (
           <Menu.Item>
-            <NavLink className="nav-item nav-link" to="/outlets">
-              Outlets
+            <NavLink className="nav-item nav-link" to="/salaries">
+              Salaries
             </NavLink>
           </Menu.Item>
         )}
 
-        {user && user.user_type === "client" && (
-          <Dropdown item simple text="Billing">
-            <Dropdown.Menu>
-              <Dropdown.Item>
-                <NavLink style={{ color: "#000" }} to="/my-invoices">
-                  My Invoices
-                </NavLink>
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        )}
-
-        {user && user.user_type === "store-manager" && (
+        {user && (user.role === "company" || user.role === "admin") && (
           <React.Fragment>
-            <Menu.Item>
-              <NavLink className="nav-item nav-link" to="/suppliers">
-                Suppliers
-              </NavLink>
-            </Menu.Item>
-
-            <Dropdown item simple text="Inventory">
+            <Dropdown item simple text="Rooms">
               <Dropdown.Menu>
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/storage-areas">
-                    Storage areas
+                  <NavLink style={{ color: "#000" }} to="/rooms-ledgers-types">
+                    Ledger Types
                   </NavLink>
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/categories">
-                    Categories
+                {/* <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/rooms-ledgers">
+                    Ledgers
                   </NavLink>
-                </Dropdown.Item>
+                </Dropdown.Item> */}
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/items">
-                    Items
+                  <NavLink style={{ color: "#000" }} to="/rooms-accounts">
+                    Accounts
                   </NavLink>
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-            <Dropdown item simple text="Orders">
-              <Dropdown.Menu>
-                <Dropdown.Item>
-                  <i className="dropdown icon" />
-                  <span className="text">Suppliers</span>
-                  <Dropdown.Menu>
-                    <Dropdown.Item>
-                      <NavLink style={{ color: "#000" }} to="/items">
-                        Place orders
-                      </NavLink>
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                      <NavLink style={{ color: "#000" }} to="/orders">
-                        Orders history
-                      </NavLink>
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                      <NavLink style={{ color: "#000" }} to="/receive-orders">
-                        Receive orders
-                      </NavLink>
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <i className="dropdown icon" />
-                  <span className="text">Cashiers</span>
-                  <Dropdown.Menu>
-                    <Dropdown.Item>
-                      <NavLink style={{ color: "#000" }} to="/cashiers-orders">
-                        Orders history
-                      </NavLink>
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
 
-            <Dropdown item simple text="POS">
+            <Dropdown item simple text="Vehicles">
               <Dropdown.Menu>
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/menu-types">
-                    Menu types
+                  <NavLink
+                    style={{ color: "#000" }}
+                    to="/vehicles-ledgers-types"
+                  >
+                    Ledger Types
                   </NavLink>
                 </Dropdown.Item>
+                {/* <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/vehicles-ledgers">
+                    Ledgers
+                  </NavLink>
+                </Dropdown.Item> */}
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/menu-items">
-                    Menu items
+                  <NavLink style={{ color: "#000" }} to="/vehicles-accounts">
+                    Accounts
                   </NavLink>
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-            <Dropdown item simple text="Users">
+
+            <Dropdown item simple text="Visas">
               <Dropdown.Menu>
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/cashiers">
-                    Cashiers
+                  <NavLink style={{ color: "#000" }} to="/visas-ledgers-types">
+                    Ledger Types
                   </NavLink>
                 </Dropdown.Item>
+                {/* <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/visas-ledgers">
+                    Ledgers
+                  </NavLink>
+                </Dropdown.Item> */}
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/waiters">
-                    Waiters
+                  <NavLink style={{ color: "#000" }} to="/visas-accounts">
+                    Accounts
                   </NavLink>
                 </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+
+            <Dropdown item simple text="Yards">
+              <Dropdown.Menu>
                 <Dropdown.Item>
-                  <NavLink style={{ color: "#000" }} to="/kitchens">
-                    Kitchen
+                  <NavLink style={{ color: "#000" }} to="/yards-ledgers-types">
+                    Ledger Types
+                  </NavLink>
+                </Dropdown.Item>
+                {/* <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/yards-ledgers">
+                    Ledgers
+                  </NavLink>
+                </Dropdown.Item> */}
+                <Dropdown.Item>
+                  <NavLink style={{ color: "#000" }} to="/yards-accounts">
+                    Accounts
+                  </NavLink>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown item simple text="More">
+              <Dropdown.Menu>
+                {user.role === "company" && (
+                  <Dropdown.Item>
+                    <NavLink
+                      style={{ color: "#000" }}
+                      className="nav-item nav-link"
+                      to="/users"
+                    >
+                      Users
+                    </NavLink>
+                  </Dropdown.Item>
+                )}
+                <Dropdown.Item>
+                  <NavLink
+                    style={{ color: "#000" }}
+                    className="nav-item nav-link"
+                    to="/banks-accounts"
+                  >
+                    Bank Details
+                  </NavLink>
+                </Dropdown.Item>
+
+                <Dropdown.Item>
+                  <NavLink
+                    style={{ color: "#000" }}
+                    className="nav-item nav-link"
+                    to="/company-documents"
+                  >
+                    Documents
                   </NavLink>
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </React.Fragment>
         )}
-
         {user && (
           <Menu.Menu position="right">
             <Menu.Item>

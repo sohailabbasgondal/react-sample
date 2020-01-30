@@ -4,68 +4,73 @@ import { Route, Redirect, Switch } from "react-router-dom";
 import NotFound from "./components/notfound";
 
 import Navigation from "./components/common/navigation";
-import Orders from "./components/orders";
 import LoginForm from "./components/loginForm";
 
-import Outlets from "./components/outlet/outlets";
-import OutletForm from "./components/outlet/outletForm";
-import OutletEditForm from "./components/outlet/outletEditForm";
-import OutletDetails from "./components/outlet/outletdetails";
+import Companies from "./components/company/companies";
+import CompanyForm from "./components/company/companyForm";
+import CompanyEditForm from "./components/company/companyEditForm";
+import CompanyEditManagerForm from "./components/company/companyManagerEditForm";
 
-import Suppliers from "./components/supplier/suppliers";
-import SupplierForm from "./components/supplier/supplierForm";
-import SupplierEditForm from "./components/supplier/supplierEditForm";
-import OutletEditManagerForm from "./components/outlet/outletManagerEditForm";
+import RoomTypes from "./components/room_ledger_type/types";
+import RoomTypeForm from "./components/room_ledger_type/typeForm";
+import RoomTypeEditForm from "./components/room_ledger_type/typeEditForm";
 
-import StorageAreas from "./components/storage_area/storageAreas";
-import StorageAreaForm from "./components/storage_area/storageAreaForm";
-import StorageAreaEditForm from "./components/storage_area/storageAreaEditForm";
+import VehicleTypes from "./components/vehicle_ledger_type/types";
+import VehicleTypeForm from "./components/vehicle_ledger_type/typeForm";
+import VehicleTypeEditForm from "./components/vehicle_ledger_type/typeEditForm";
 
-import Categories from "./components/category/categories";
-import CategoryForm from "./components/category/categoryForm";
-import CategoryEditForm from "./components/category/categoryEditForm";
+import VisaTypes from "./components/visa_ledger_type/types";
+import VisaTypeForm from "./components/visa_ledger_type/typeForm";
+import VisaTypeEditForm from "./components/visa_ledger_type/typeEditForm";
 
-import SupplierItems from "./components/supplier_item/supplierItems";
-import SupplierItemForm from "./components/supplier_item/supplierItemForm";
-import SupplierItemEditForm from "./components/supplier_item/supplierItemEditForm";
-import SupplierItemDetail from "./components/supplier_item/supplierItemDetail";
+import YardTypes from "./components/yard_ledger_type/types";
+import YardTypeForm from "./components/yard_ledger_type/typeForm";
+import YardTypeEditForm from "./components/yard_ledger_type/typeEditForm";
 
-import MenuTypes from "./components/menu_type/menuTypes";
-import MenuTypeForm from "./components/menu_type/menuTypeForm";
-import MenuTypeEditForm from "./components/menu_type/menuTypeEditForm";
+import Rooms from "./components/room/rooms";
+import RoomForm from "./components/room/form";
+import RoomEditForm from "./components/room/editForm";
+import RoomDetail from "./components/room/detail";
+import RoomLedgerEditForm from "./components/room/editLedger";
 
-import MenuItems from "./components/menu_item/menuItems";
-import MenuItemForm from "./components/menu_item/menuItemForm";
-import MenuItemEditForm from "./components/menu_item/menuItemEditForm";
+import Vehicles from "./components/vehicle/vehicles";
+import VehicleForm from "./components/vehicle/form";
+import VehicleEditForm from "./components/vehicle/editForm";
+import VehicleDetail from "./components/vehicle/detail";
+import VehicleDocumentForm from "./components/vehicle/addDocument";
+import VehicleDocumentEditForm from "./components/vehicle/editDocument";
+import VehicleLedgerEditForm from "./components/vehicle/editLedger";
 
-import SupplierOrders from "./components/supplier_order/supplierOrders";
-import SupplierOrderDetail from "./components/supplier_order/supplierOrderDetail";
-import ReceiveOrders from "./components/receive_order/receiveOrders";
-import ReceiveOrderDetail from "./components/receive_order/receiveOrderDetail";
-import InvoiceOrder from "./components/receive_order/invoiceOrder";
+import Yards from "./components/yard/yards";
+import YardForm from "./components/yard/form";
+import YardEditForm from "./components/yard/editForm";
+import YardDetail from "./components/yard/detail";
+import YardLedgerEditForm from "./components/yard/editLedger";
 
-import Cashiers from "./components/cashier/cashiers";
-import CashierForm from "./components/cashier/cashierForm";
-import CashierEditForm from "./components/cashier/cashierEditForm";
+import Visas from "./components/visa/visas";
+import VisaForm from "./components/visa/form";
+import VisaEditForm from "./components/visa/editForm";
+import VisaDetail from "./components/visa/detail";
+import VisaDocumentForm from "./components/visa/addDocument";
+import VisaLedgerEditForm from "./components/visa/editLedger";
+import VisaDocumentEditForm from "./components/visa/editDocument";
 
-import Waiters from "./components/waiter/waiters";
-import WaiterForm from "./components/waiter/waiterForm";
-import WaiterEditForm from "./components/waiter/waiterEditForm";
+import Banks from "./components/bank/banks";
+import BankForm from "./components/bank/form";
+import BankEditForm from "./components/bank/editForm";
 
-import Kitchens from "./components/kitchen/kitchens";
-import KitchenForm from "./components/kitchen/kitchenForm";
-import KitchenEditForm from "./components/kitchen/kitchenEditForm";
+import CompanyDocuments from "./components/company_document/documents";
+import CompanyDocumentForm from "./components/company_document/form";
+import CompanyDocumentEditForm from "./components/company_document/editForm";
 
-import CashierOrders from "./components/cashier_order/cashierOrders";
-import CashierOrderDetail from "./components/cashier_order/cashierOrderDetail";
+import Users from "./components/user/users";
+import UserForm from "./components/user/userForm";
+import UserEditForm from "./components/user/userEditForm";
 
-import Invoices from "./components/billing/invoices";
-
-import Terminal from "./components/terminal/terminal";
-
-import Queue from "./components/queue/queue";
-
-import Recipes from "./components/recipe/recipes";
+import Salaries from "./components/salary/types";
+import SalaryForm from "./components/salary/typeForm";
+import SalaryEditForm from "./components/salary/typeEditForm";
+import SalaryDetail from "./components/salary/detail";
 
 import { ToastContainer } from "react-toastify";
 
@@ -98,172 +103,240 @@ class App extends Component {
               component={Dashboard}
             />
             <ProtectedRoute path="/dashboard" component={Dashboard} />
-            {/* menu items recipes */}
-            <ProtectedRoute
-              exact
-              path="/menu-items/:id/recipe"
-              component={Recipes}
-            />
-            {/* Outlets routes */}
-            <ProtectedRoute exact path="/outlets/:id" component={OutletForm} />
-            <ProtectedRoute
-              path="/outlets/:id/edit"
-              component={OutletEditForm}
-            />
-            <ProtectedRoute
-              component={OutletDetails}
-              path="/outlets/view/:id"
-              exact
-            />
-            <ProtectedRoute
-              exact
-              path="/outlets/:id/manager-edit/:uid"
-              component={OutletEditManagerForm}
-            />
-            <ProtectedRoute component={Outlets} path="/outlets" />
-
-            {/* Billign routes */}
-
-            <ProtectedRoute component={Invoices} path="/my-invoices" />
-
-            {/* Suppliers routes */}
-            <ProtectedRoute
-              exact
-              path="/suppliers/:id"
-              component={SupplierForm}
-            />
-            <ProtectedRoute
-              path="/suppliers/:id/edit"
-              component={SupplierEditForm}
-            />
-            <ProtectedRoute path="/suppliers" component={Suppliers} />
-            {/* storage areas */}
-            <ProtectedRoute
-              exact
-              path="/storage-areas/:id"
-              component={StorageAreaForm}
-            />
-            <ProtectedRoute
-              path="/storage-areas/:id/edit"
-              component={StorageAreaEditForm}
-            />
-            <ProtectedRoute path="/storage-areas" component={StorageAreas} />
-            {/* categories */}
-            <ProtectedRoute
-              exact
-              path="/categories/:id"
-              component={CategoryForm}
-            />
-            <ProtectedRoute
-              path="/categories/:id/edit"
-              component={CategoryEditForm}
-            />
-            <ProtectedRoute path="/categories" component={Categories} />
-            {/* items */}
-            <ProtectedRoute
-              exact
-              path="/items/:id"
-              component={SupplierItemForm}
-            />
-            <ProtectedRoute
-              exact
-              path="/items/:id/edit"
-              component={SupplierItemEditForm}
-            />
-            <ProtectedRoute
-              exact
-              path="/items/view/:id"
-              component={SupplierItemDetail}
-            />
-            <ProtectedRoute exact path="/items" component={SupplierItems} />
-            {/* menu tyes */}
-            <ProtectedRoute
-              exact
-              path="/menu-types/:id"
-              component={MenuTypeForm}
-            />
-            <ProtectedRoute
-              path="/menu-types/:id/edit"
-              component={MenuTypeEditForm}
-            />
-            <ProtectedRoute path="/menu-types" component={MenuTypes} />
-            {/* menu items */}
-            <ProtectedRoute
-              exact
-              path="/menu-items/:id"
-              component={MenuItemForm}
-            />
-            <ProtectedRoute
-              path="/menu-items/:id/edit"
-              component={MenuItemEditForm}
-            />
-            <ProtectedRoute path="/menu-items" component={MenuItems} />
-            <ProtectedRoute
-              path="/orders/view/:id"
-              component={SupplierOrderDetail}
-            />
-            <ProtectedRoute path="/orders" component={SupplierOrders} />
 
             <ProtectedRoute
-              path="/receive-orders/invoice/:id"
-              component={InvoiceOrder}
+              exact
+              path="/yards-accounts/view/:id"
+              component={YardDetail}
             />
-            <ProtectedRoute
-              path="/receive-orders/view/:id"
-              component={ReceiveOrderDetail}
-            />
-            <ProtectedRoute path="/receive-orders" component={ReceiveOrders} />
 
-            {/* cashiers routes */}
+            {/* salaries routes */}
+
             <ProtectedRoute
               exact
-              path="/cashiers/:id"
-              component={CashierForm}
+              path="/salaries/view/:id"
+              component={SalaryDetail}
             />
-            <ProtectedRoute
-              path="/cashiers/:id/edit"
-              component={CashierEditForm}
-            />
-            <ProtectedRoute path="/cashiers" component={Cashiers} />
 
-            {/* waiters routes */}
-            <ProtectedRoute exact path="/waiters/:id" component={WaiterForm} />
+            <ProtectedRoute exact path="/salaries/:id" component={SalaryForm} />
             <ProtectedRoute
-              path="/waiters/:id/edit"
-              component={WaiterEditForm}
+              path="/salaries/:id/edit"
+              component={SalaryEditForm}
             />
-            <ProtectedRoute path="/waiters" component={Waiters} />
+            <ProtectedRoute path="/salaries" component={Salaries} />
 
-            {/* kitchens routes */}
+            {/* users routes */}
+            <ProtectedRoute exact path="/users/:id" component={UserForm} />
+            <ProtectedRoute path="/users/:id/edit" component={UserEditForm} />
+            <ProtectedRoute path="/users" component={Users} />
+
+            {/* company documents */}
             <ProtectedRoute
               exact
-              path="/kitchens/:id"
-              component={KitchenForm}
+              path="/company-documents/:id"
+              component={CompanyDocumentForm}
             />
-            <ProtectedRoute
-              path="/kitchens/:id/edit"
-              component={KitchenEditForm}
-            />
-            <ProtectedRoute path="/kitchens" component={Kitchens} />
-
-            {/* pos terminal */}
-            <ProtectedRoute
-              path="/cashiers-orders/view/:id"
-              component={CashierOrderDetail}
-            />
-            <ProtectedRoute path="/cashiers-orders" component={CashierOrders} />
-            {/* pos terminal */}
             <ProtectedRoute
               exact
-              path="/pos-terminal/:id"
-              component={Terminal}
+              path="/company-documents/:id/edit"
+              component={CompanyDocumentEditForm}
             />
-            <ProtectedRoute exact path="/pos-terminal" component={Terminal} />
+            <ProtectedRoute
+              path="/company-documents"
+              component={CompanyDocuments}
+            />
+            {/* banks accounts */}
+            <ProtectedRoute
+              exact
+              path="/banks-accounts/:id"
+              component={BankForm}
+            />
+            <ProtectedRoute
+              path="/banks-accounts/:id/edit"
+              component={BankEditForm}
+            />
+            <ProtectedRoute path="/banks-accounts" component={Banks} />
+            {/* visas accounts */}
 
-            {/* order queue */}
-            <ProtectedRoute path="/order-queue" component={Queue} />
-            {/* outlet settings */}
+            <ProtectedRoute
+              exact
+              path="/visas-accounts/:id/document/new/"
+              component={VisaDocumentForm}
+            />
 
+            <ProtectedRoute
+              exact
+              path="/visas-ledgers/:id/edit"
+              component={VisaLedgerEditForm}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/visas-documents/:id/edit"
+              component={VisaDocumentEditForm}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/visas-accounts/view/:id"
+              component={VisaDetail}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/visas-accounts/:id"
+              component={VisaForm}
+            />
+            <ProtectedRoute
+              exact
+              path="/visas-accounts/:id/edit"
+              component={VisaEditForm}
+            />
+            <ProtectedRoute path="/visas-accounts" component={Visas} />
+            {/* yards accounts */}
+
+            <ProtectedRoute
+              exact
+              path="/yards-ledgers/:id/edit"
+              component={YardLedgerEditForm}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/yards-accounts/:id"
+              component={YardForm}
+            />
+            <ProtectedRoute
+              path="/yards-accounts/:id/edit"
+              component={YardEditForm}
+            />
+            <ProtectedRoute path="/yards-accounts" component={Yards} />
+            {/* vehicles accounts */}
+
+            <ProtectedRoute
+              exact
+              path="/vehicles-ledgers/:id/edit"
+              component={VehicleLedgerEditForm}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/vehicles-accounts/:id/document/new/"
+              component={VehicleDocumentForm}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/vehicles-documents/:id/edit"
+              component={VehicleDocumentEditForm}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/vehicles-accounts/view/:id"
+              component={VehicleDetail}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/vehicles-accounts/:id"
+              component={VehicleForm}
+            />
+            <ProtectedRoute
+              exact
+              path="/vehicles-accounts/:id/edit"
+              component={VehicleEditForm}
+            />
+            <ProtectedRoute path="/vehicles-accounts" component={Vehicles} />
+            {/* rooms accounts */}
+
+            <ProtectedRoute
+              exact
+              path="/rooms-ledgers/:id/edit"
+              component={RoomLedgerEditForm}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/rooms-accounts/view/:id"
+              component={RoomDetail}
+            />
+
+            <ProtectedRoute
+              exact
+              path="/rooms-accounts/:id"
+              component={RoomForm}
+            />
+            <ProtectedRoute
+              path="/rooms-accounts/:id/edit"
+              component={RoomEditForm}
+            />
+            <ProtectedRoute path="/rooms-accounts" component={Rooms} />
+            {/* yards ledgers type routes */}
+
+            <ProtectedRoute
+              exact
+              path="/yards-ledgers-types/:id"
+              component={YardTypeForm}
+            />
+            <ProtectedRoute
+              path="/yards-ledgers-types/:id/edit"
+              component={YardTypeEditForm}
+            />
+            <ProtectedRoute path="/yards-ledgers-types" component={YardTypes} />
+            {/* visas ledgers type routes */}
+            <ProtectedRoute
+              exact
+              path="/visas-ledgers-types/:id"
+              component={VisaTypeForm}
+            />
+            <ProtectedRoute
+              path="/visas-ledgers-types/:id/edit"
+              component={VisaTypeEditForm}
+            />
+            <ProtectedRoute path="/visas-ledgers-types" component={VisaTypes} />
+            {/* vehicles ledgers type routes */}
+
+            <ProtectedRoute
+              exact
+              path="/vehicles-ledgers-types/:id"
+              component={VehicleTypeForm}
+            />
+            <ProtectedRoute
+              path="/vehicles-ledgers-types/:id/edit"
+              component={VehicleTypeEditForm}
+            />
+            <ProtectedRoute
+              path="/vehicles-ledgers-types"
+              component={VehicleTypes}
+            />
+            {/* rooms ledgers type routes */}
+            <ProtectedRoute
+              exact
+              path="/rooms-ledgers-types/:id"
+              component={RoomTypeForm}
+            />
+            <ProtectedRoute
+              path="/rooms-ledgers-types/:id/edit"
+              component={RoomTypeEditForm}
+            />
+            <ProtectedRoute path="/rooms-ledgers-types" component={RoomTypes} />
+            {/* companies routes */}
+            <ProtectedRoute
+              exact
+              path="/companies/:id/manager-edit/:uid"
+              component={CompanyEditManagerForm}
+            />
+            <ProtectedRoute
+              exact
+              path="/companies/:id"
+              component={CompanyForm}
+            />
+            <ProtectedRoute
+              path="/companies/:id/edit"
+              component={CompanyEditForm}
+            />
+            <ProtectedRoute path="/companies" component={Companies} />
             <Route path="/login" component={LoginForm} />
             <Route path="/logout" component={Logout} />
             <Route path="/not-found" component={NotFound} />

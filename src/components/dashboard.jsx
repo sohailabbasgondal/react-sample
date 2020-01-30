@@ -25,153 +25,135 @@ import BlockUi from "react-block-ui";
 import TableTitle from "./common/tableTitle";
 import auth from "../services/authService";
 
-import {
-  subscriptionInfo,
-  cancelSubscription
-} from "../services/billingOrderService";
 import Currency from "./common/currency";
 
 class Dashboard extends Component {
   state = {
     report: { outlet_account: [] },
-    totalCashiers: 0,
-    totalWaiters: 0,
-    dashboard: "customer",
-    outletid: "",
-    subscription: { plan: {}, trial_start: " " }
+    totalUsers: 0,
+    dashboard: "client",
+    outletid: ""
   };
 
   async componentDidMount() {
-    if (auth.getCurrentUser().user_type === "store-manager") {
-      this.setState({ dashboard: "outlet" });
-      this.loadDashboard(auth.getCurrentUser().outlet_id);
-    }
-
-    if (auth.getCurrentUser().user_type === "client") {
-      this.loadSubscriptionData();
+    if (auth.getCurrentUser().role === "company") {
+      this.setState({ dashboard: "company" });
+      this.loadDashboard(auth.getCurrentUser().company_id);
+    } else if (auth.getCurrentUser().role === "client") {
     }
   }
 
-  loadSubscriptionData = async () => {
-    this.setState({
-      blocking: true
-    });
-    const { data: subscription } = await subscriptionInfo();
-    this.setState({ subscription, blocking: false });
-  };
-
-  loadDashboard = async outletId => {
+  loadDashboard = async companyId => {
     this.setState({
       blocking: true,
       show: "none",
-      dashboard: "outlet",
-      outletid: outletId
+      dashboard: "company",
+      companyId: companyId
     });
-    const { data: report } = await getGeneralReport(outletId);
+    const { data: report } = await getGeneralReport(companyId);
 
-    const { data: supplierOrdersReportData } = await getOrdersBySuppliersReport(
-      outletId
-    );
-    this.barChart(
-      supplierOrdersReportData.suppliers,
-      supplierOrdersReportData.orders,
-      supplierOrdersReportData.colors,
-      "bySupplierOrdersCount",
-      "Number of orders by suppliers"
-    );
+    // const { data: supplierOrdersReportData } = await getOrdersBySuppliersReport(
+    //   outletId
+    // );
+    // this.barChart(
+    //   supplierOrdersReportData.suppliers,
+    //   supplierOrdersReportData.orders,
+    //   supplierOrdersReportData.colors,
+    //   "bySupplierOrdersCount",
+    //   "Number of orders by suppliers"
+    // );
 
-    const {
-      data: supplierOrdersValueReportData
-    } = await getOrdersValueBySuppliersReport(outletId);
-    this.barChart(
-      supplierOrdersValueReportData.suppliers,
-      supplierOrdersValueReportData.orders,
-      supplierOrdersValueReportData.colors,
-      "bySupplierOrdersValueCount",
-      "Value of orders by suppliers"
-    );
+    // const {
+    //   data: supplierOrdersValueReportData
+    // } = await getOrdersValueBySuppliersReport(outletId);
+    // this.barChart(
+    //   supplierOrdersValueReportData.suppliers,
+    //   supplierOrdersValueReportData.orders,
+    //   supplierOrdersValueReportData.colors,
+    //   "bySupplierOrdersValueCount",
+    //   "Value of orders by suppliers"
+    // );
 
-    const {
-      data: itemsByCategoiresReportData
-    } = await getItemsByCategoiresReport(outletId);
-    this.barChart(
-      itemsByCategoiresReportData.categoires,
-      itemsByCategoiresReportData.items,
-      itemsByCategoiresReportData.colors,
-      "byCategoriesItemsCount",
-      "Number of items by categoires"
-    );
+    // const {
+    //   data: itemsByCategoiresReportData
+    // } = await getItemsByCategoiresReport(outletId);
+    // this.barChart(
+    //   itemsByCategoiresReportData.categoires,
+    //   itemsByCategoiresReportData.items,
+    //   itemsByCategoiresReportData.colors,
+    //   "byCategoriesItemsCount",
+    //   "Number of items by categoires"
+    // );
 
-    const {
-      data: itemsByStorageAreasReportData
-    } = await getItemsByStorageAreasReport(outletId);
-    this.barChart(
-      itemsByStorageAreasReportData.storage_areas,
-      itemsByStorageAreasReportData.items,
-      itemsByStorageAreasReportData.colors,
-      "byStorageAreasItemsCount",
-      "Number of items by storage areas"
-    );
+    // const {
+    //   data: itemsByStorageAreasReportData
+    // } = await getItemsByStorageAreasReport(outletId);
+    // this.barChart(
+    //   itemsByStorageAreasReportData.storage_areas,
+    //   itemsByStorageAreasReportData.items,
+    //   itemsByStorageAreasReportData.colors,
+    //   "byStorageAreasItemsCount",
+    //   "Number of items by storage areas"
+    // );
 
-    const {
-      data: itemsBySuppliersReportData
-    } = await getItemsBySuppliersReport(outletId);
-    this.barChart(
-      itemsBySuppliersReportData.suppliers,
-      itemsBySuppliersReportData.items,
-      itemsBySuppliersReportData.colors,
-      "bySuppliersItemsCount",
-      "Number of items by suppliers"
-    );
+    // const {
+    //   data: itemsBySuppliersReportData
+    // } = await getItemsBySuppliersReport(outletId);
+    // this.barChart(
+    //   itemsBySuppliersReportData.suppliers,
+    //   itemsBySuppliersReportData.items,
+    //   itemsBySuppliersReportData.colors,
+    //   "bySuppliersItemsCount",
+    //   "Number of items by suppliers"
+    // );
 
-    const {
-      data: pendingOrdersBySuppliersReportData
-    } = await getPendingOrdersBySuppliersReport(outletId);
-    this.barChart(
-      pendingOrdersBySuppliersReportData.suppliers,
-      pendingOrdersBySuppliersReportData.orders,
-      pendingOrdersBySuppliersReportData.colors,
-      "bySuppliersPendingOrdersCount",
-      "Number of pending orders by suppliers"
-    );
+    // const {
+    //   data: pendingOrdersBySuppliersReportData
+    // } = await getPendingOrdersBySuppliersReport(outletId);
+    // this.barChart(
+    //   pendingOrdersBySuppliersReportData.suppliers,
+    //   pendingOrdersBySuppliersReportData.orders,
+    //   pendingOrdersBySuppliersReportData.colors,
+    //   "bySuppliersPendingOrdersCount",
+    //   "Number of pending orders by suppliers"
+    // );
 
-    const {
-      data: ordersByCashiersReportData
-    } = await getOrdersByCashiersReport(outletId);
-    this.barChart(
-      ordersByCashiersReportData.cashiers,
-      ordersByCashiersReportData.orders,
-      ordersByCashiersReportData.colors,
-      "byCashiersOrdersCount",
-      "Number of orders by cashiers"
-    );
+    // const {
+    //   data: ordersByCashiersReportData
+    // } = await getOrdersByCashiersReport(outletId);
+    // this.barChart(
+    //   ordersByCashiersReportData.cashiers,
+    //   ordersByCashiersReportData.orders,
+    //   ordersByCashiersReportData.colors,
+    //   "byCashiersOrdersCount",
+    //   "Number of orders by cashiers"
+    // );
 
-    const {
-      data: menuItemsByMenuItemsTypesReportData
-    } = await getItemsByMenuTypesReport(outletId);
-    this.barChart(
-      menuItemsByMenuItemsTypesReportData.menu_types,
-      menuItemsByMenuItemsTypesReportData.items,
-      menuItemsByMenuItemsTypesReportData.colors,
-      "byMeuItemsItemsCount",
-      "Number of menu items by menu types"
-    );
+    // const {
+    //   data: menuItemsByMenuItemsTypesReportData
+    // } = await getItemsByMenuTypesReport(outletId);
+    // this.barChart(
+    //   menuItemsByMenuItemsTypesReportData.menu_types,
+    //   menuItemsByMenuItemsTypesReportData.items,
+    //   menuItemsByMenuItemsTypesReportData.colors,
+    //   "byMeuItemsItemsCount",
+    //   "Number of menu items by menu types"
+    // );
 
-    const {
-      data: itemsCurrentStocksAndValue
-    } = await getItemsCurrentStockAndValueReport(outletId);
+    // const {
+    //   data: itemsCurrentStocksAndValue
+    // } = await getItemsCurrentStockAndValueReport(outletId);
 
-    this.barChart(
-      itemsCurrentStocksAndValue.items,
-      itemsCurrentStocksAndValue.value,
-      itemsCurrentStocksAndValue.colors,
-      "bySuppliesCurrentStockAndValue",
-      "Suppiles current stock and value"
-    );
+    // this.barChart(
+    //   itemsCurrentStocksAndValue.items,
+    //   itemsCurrentStocksAndValue.value,
+    //   itemsCurrentStocksAndValue.colors,
+    //   "bySuppliesCurrentStockAndValue",
+    //   "Suppiles current stock and value"
+    // );
 
     this.setState({ report, blocking: false });
-    this.totalCashiers();
-    this.totalWaiters();
+    this.totalUsers();
   };
 
   barChart(labels, data, colors, container, title) {
@@ -204,138 +186,99 @@ class Dashboard extends Component {
     });
   }
 
-  totalCashiers = () => {
+  totalUsers = () => {
     let total = 0;
 
-    this.state.report.outlet_account.map(account =>
-      account.outlet_account.user_type == "cashier" ? (total = total + 1) : ""
-    );
-    this.setState({ totalCashiers: total });
-  };
-  totalWaiters = () => {
-    let total = 0;
-    this.state.report.outlet_account.map(account =>
-      account.outlet_account.user_type == "waiter" ? (total = total + 1) : ""
-    );
-    this.setState({ totalWaiters: total });
+    // this.state.report.company_account.map(account =>
+    //    total = total + 1;
+    // );
+    this.setState({ totalUsers: 3 });
   };
 
   loadCustomerDashboard = () => {
     this.setState({ dashboard: "customer" });
   };
 
-  handleCancelSubscription = async () => {
-    this.setState({ blocking: true });
-
-    await cancelSubscription();
-    auth.refresh();
-
-    this.setState({ blocking: false });
-  };
-
   render() {
-    let {
-      report,
-      totalWaiters,
-      totalCashiers,
-      dashboard,
-      outletid,
-      subscription
-    } = this.state;
+    let { report, totalUsers, dashboard, outletid } = this.state;
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>
-        {auth.getCurrentUser().user_type === "client" ? (
-          <div style={{ marginBottom: "10px" }}>
-            <Button.Group>
-              {auth.getCurrentUser().outlets.map(outlet => (
-                <React.Fragment>
-                  <Button
-                    id={`outlet${outlet.id}`}
-                    positive={
-                      dashboard == "outlet" && outletid == outlet.id
-                        ? true
-                        : false
-                    }
-                    onClick={() => this.loadDashboard(outlet.id)}
-                  >
-                    {outlet.name} Dashboard
-                  </Button>
-                  <Button.Or text="or" />
-                </React.Fragment>
-              ))}
-              <Button
-                onClick={this.loadCustomerDashboard}
-                positive={dashboard == "customer" ? true : false}
-              >
-                Customer Dashboard
-              </Button>
-            </Button.Group>
-          </div>
-        ) : (
-          ""
-        )}
-        <div style={{ display: dashboard == "outlet" ? "block" : "none" }}>
-          <TableTitle title="Statistics" icon="tag" />
+        <TableTitle title="Statistics" icon="tag" />
+        <div style={{ display: dashboard == "company" ? "block" : "none" }}>
           <Grid>
             <Grid.Row>
-              <Grid.Column width={5}>
+              <Grid.Column width={4}>
                 <Message>
-                  <Message.Header>Suppliers Statistics</Message.Header>
+                  <Message.Header>Rooms</Message.Header>
 
                   <Statistic.Group widths="2">
                     <Statistic color="orange">
-                      <Statistic.Value>22</Statistic.Value>
-                      <Statistic.Label>Categories</Statistic.Label>
+                      <Statistic.Value>{report.room_count}</Statistic.Value>
+                      <Statistic.Label>Total Accounts</Statistic.Label>
                     </Statistic>
 
                     <Statistic color="orange">
-                      <Statistic.Value>{report.supplier_count}</Statistic.Value>
-                      <Statistic.Label>Suppliers</Statistic.Label>
+                      <Statistic.Value>
+                        {report.room_ledger_type_count}
+                      </Statistic.Value>
+                      <Statistic.Label>Ledger Types</Statistic.Label>
                     </Statistic>
                   </Statistic.Group>
                 </Message>
               </Grid.Column>
-              <Grid.Column width={6}>
+              <Grid.Column width={4}>
                 <Message>
-                  <Message.Header>Inventory Statistics</Message.Header>
+                  <Message.Header>Vehicles</Message.Header>
 
-                  <Statistic.Group widths="3">
+                  <Statistic.Group widths="2">
+                    <Statistic color="blue">
+                      <Statistic.Value>{report.vehicle_count}</Statistic.Value>
+                      <Statistic.Label>Total Accounts</Statistic.Label>
+                    </Statistic>
+
                     <Statistic color="blue">
                       <Statistic.Value>
-                        {report.storage_area_count}
+                        {report.vehicle_ledger_type_count}
                       </Statistic.Value>
-                      <Statistic.Label>Storage Areas</Statistic.Label>
-                    </Statistic>
-
-                    <Statistic color="blue">
-                      <Statistic.Value>{report.category_count}</Statistic.Value>
-                      <Statistic.Label>Categories</Statistic.Label>
-                    </Statistic>
-
-                    <Statistic color="blue">
-                      <Statistic.Value>{report.item_count}</Statistic.Value>
-                      <Statistic.Label>Items</Statistic.Label>
+                      <Statistic.Label>Ledger Types</Statistic.Label>
                     </Statistic>
                   </Statistic.Group>
                 </Message>
               </Grid.Column>
-              <Grid.Column width={5}>
+              <Grid.Column width={4}>
                 <Message>
-                  <Message.Header>Suppliers Orders Statistics</Message.Header>
+                  <Message.Header>Visas</Message.Header>
 
                   <Statistic.Group widths="2">
                     <Statistic color="yellow">
-                      <Statistic.Value>
-                        {report.supplier_new_orders}
-                      </Statistic.Value>
-                      <Statistic.Label>New Orders</Statistic.Label>
+                      <Statistic.Value>{report.visa_count}</Statistic.Value>
+                      <Statistic.Label>Total Accounts</Statistic.Label>
                     </Statistic>
 
                     <Statistic color="yellow">
                       <Statistic.Value>
-                        {report.supplier_received_orders}
+                        {report.visa_ledger_type_count}
                       </Statistic.Value>
-                      <Statistic.Label>Received Orders</Statistic.Label>
+                      <Statistic.Label>Ledger Types</Statistic.Label>
+                    </Statistic>
+                  </Statistic.Group>
+                </Message>
+              </Grid.Column>
+              <Grid.Column width={4}>
+                <Message>
+                  <Message.Header>Yards</Message.Header>
+
+                  <Statistic.Group widths="2">
+                    <Statistic color="yellow">
+                      <Statistic.Value>{report.yard_count}</Statistic.Value>
+                      <Statistic.Label>Total Accounts</Statistic.Label>
+                    </Statistic>
+
+                    <Statistic color="yellow">
+                      <Statistic.Value>
+                        {report.yard_ledger_type_count}
+                      </Statistic.Value>
+                      <Statistic.Label>Ledger Types</Statistic.Label>
                     </Statistic>
                   </Statistic.Group>
                 </Message>
@@ -343,6 +286,53 @@ class Dashboard extends Component {
             </Grid.Row>
 
             <Grid.Row>
+              <Grid.Column width={4}>
+                <Message>
+                  <Message.Header>Users</Message.Header>
+
+                  <Statistic.Group widths="1">
+                    <Statistic color="brown">
+                      <Statistic.Value>
+                        {report.company_account_count}
+                      </Statistic.Value>
+                      <Statistic.Label>Total</Statistic.Label>
+                    </Statistic>
+                  </Statistic.Group>
+                </Message>
+              </Grid.Column>
+
+              <Grid.Column width={4}>
+                <Message>
+                  <Message.Header>Banks</Message.Header>
+
+                  <Statistic.Group widths="1">
+                    <Statistic color="white">
+                      <Statistic.Value>
+                        {report.company_bank_detail_count}
+                      </Statistic.Value>
+                      <Statistic.Label>Total</Statistic.Label>
+                    </Statistic>
+                  </Statistic.Group>
+                </Message>
+              </Grid.Column>
+
+              <Grid.Column width={4}>
+                <Message>
+                  <Message.Header>Documents</Message.Header>
+
+                  <Statistic.Group widths="1">
+                    <Statistic color="red">
+                      <Statistic.Value>
+                        {report.company_document_count}
+                      </Statistic.Value>
+                      <Statistic.Label>Total</Statistic.Label>
+                    </Statistic>
+                  </Statistic.Group>
+                </Message>
+              </Grid.Column>
+            </Grid.Row>
+
+            {/*<Grid.Row>
               <Grid.Column width={5}>
                 <Message>
                   <Message.Header>Point Of Sale</Message.Header>
@@ -410,7 +400,7 @@ class Dashboard extends Component {
                 </Message>
               </Grid.Column>
             </Grid.Row>
-            <TableTitle title="Supplier orders" icon="tag" />
+             <TableTitle title="Supplier orders" icon="tag" />
             <Grid.Row>
               <Grid.Column width={8}>
                 <canvas id="bySupplierOrdersCount"></canvas>
@@ -456,108 +446,12 @@ class Dashboard extends Component {
               </Grid.Column>
             </Grid.Row>
             <TableTitle title="Supplies currnet stock and value" icon="tag" />
-            <Grid.Row>
+            <Grid.Row> 
               <Grid.Column width={16}>
                 <canvas id="bySuppliesCurrentStockAndValue"></canvas>
               </Grid.Column>
-            </Grid.Row>
+            </Grid.Row>*/}
           </Grid>
-        </div>
-        <div
-          style={{
-            display:
-              dashboard === "customer" && auth.getCurrentUser().subscription_id
-                ? "block"
-                : "none"
-          }}
-        >
-          <TableTitle title="Subscription detail" icon="tag" />
-          <Table celled padded>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell singleLine width={3}>
-                  Product/Service
-                </Table.HeaderCell>
-                <Table.HeaderCell width={3}>Price</Table.HeaderCell>
-                <Table.HeaderCell width={2}>Billing cycle</Table.HeaderCell>
-                <Table.HeaderCell width={2}>Due date</Table.HeaderCell>
-                <Table.HeaderCell width={3}>Status</Table.HeaderCell>
-                <Table.HeaderCell width={3}></Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>
-                  {subscription.plan.nickname}
-                  <br />
-                  No of outlets: {subscription.quantity}
-                </Table.Cell>
-                <Table.Cell>
-                  <Currency val="" />
-                  {Number(
-                    (subscription.quantity * subscription.plan.amount) / 100
-                  )}
-                  <br />
-                  <Label>
-                    {auth.getCurrentUser().card_type}
-                    <Label.Detail>
-                      {" "}
-                      {auth.getCurrentUser().card_digits}
-                    </Label.Detail>
-                  </Label>
-                </Table.Cell>
-                <Table.Cell>{subscription.plan.interval}</Table.Cell>
-                <Table.Cell>{subscription.upcoming_invoice}</Table.Cell>
-                <Table.Cell>
-                  <div
-                    style={{
-                      display:
-                        subscription.trial_start &&
-                        subscription.status != "canceled"
-                          ? "block"
-                          : "none"
-                    }}
-                  >
-                    Trial started: {subscription.trial_start}
-                    <br />
-                    Trial end: {subscription.trial_end}
-                  </div>
-                  <div
-                    style={{
-                      display:
-                        subscription.trial_start &&
-                        subscription.status === "canceled"
-                          ? "none"
-                          : "block"
-                    }}
-                  >
-                    <Label color="green">{subscription.status}</Label>
-                  </div>
-
-                  <div
-                    style={{
-                      display:
-                        subscription.status === "canceled" ? "block" : "none"
-                    }}
-                  >
-                    <Label color="red">Cancelled</Label>
-                  </div>
-                </Table.Cell>
-                <Table.Cell>
-                  <Button
-                    style={{
-                      display:
-                        subscription.status != "canceled" ? "block" : "none"
-                    }}
-                    onClick={this.handleCancelSubscription}
-                    content="Cancel subscription"
-                    primary
-                  />
-                </Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          </Table>
         </div>
       </BlockUi>
     );
