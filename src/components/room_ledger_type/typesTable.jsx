@@ -8,12 +8,12 @@ class RoomTypesTable extends Component {
     {
       path: "name",
       label: "Name",
-      width: "4"
+      width: "12"
     },
     {
       path: "status",
       label: "Status",
-      width: "1",
+      width: "2",
       content: type =>
         type.status == 1 ? (
           <Label color="green">Enbled</Label>

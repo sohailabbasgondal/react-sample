@@ -26,6 +26,10 @@
   margin-left: 3px;
 }
 
+.outer-container {
+  width: 80%;
+}
+
 /* .margin-auto {
   margin: auto;
 }

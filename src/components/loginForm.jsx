@@ -40,7 +40,7 @@ class LoginForm extends Form {
   };
 
   render() {
-    const logoUrl = process.env.REACT_APP_URL + "/logo.jpg";
+    const logoUrl = process.env.REACT_APP_URL + "/logo.png";
     if (auth.getCurrentUser()) return <Redirect to="/dashboard" />;
     return (
       <BlockUi tag="div" blocking={this.state.blocking}>

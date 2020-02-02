@@ -158,43 +158,44 @@ class RoomTypes extends Component {
           size="mini"
         />
         <TableTitle title="Rooms ledger types" icon="tag" />
+        <center>
+          <div className="outer-container" style={{ display: otherShow }}>
+            <Table>
+              <Table.Body>
+                <Table.Row>
+                  <Table.Cell style={{ paddingBottom: 0 }}>
+                    <SearchTextBox onSearchButtonClick={this.handleSearching} />
+                  </Table.Cell>
+                  <Table.Cell textAlign="right">
+                    <Link
+                      to="/rooms-ledgers-types/new"
+                      className="ui primary button"
+                    >
+                      New Ledger Type
+                    </Link>
+                  </Table.Cell>
+                </Table.Row>
+              </Table.Body>
+            </Table>
 
-        <div style={{ display: otherShow }}>
-          <Table>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell style={{ paddingBottom: 0 }}>
-                  <SearchTextBox onSearchButtonClick={this.handleSearching} />
-                </Table.Cell>
-                <Table.Cell textAlign="right">
-                  <Link
-                    to="/rooms-ledgers-types/new"
-                    className="ui primary button"
-                  >
-                    New Ledger Type
-                  </Link>
-                </Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          </Table>
+            <p>Showing {totalCount} types.</p>
 
-          <p>Showing {totalCount} types.</p>
-
-          <TypesTable
-            types={types}
-            sortColumn={sortColumn}
-            onDelete={this.handleDelete}
-            onUpdate={this.handleUpdate}
-            onSort={this.handleSort}
-            onStatusUpdate={this.handleUpdateStatus}
-          />
-          <Pagination
-            itemsCount={totalCount}
-            pageSize={pageSize}
-            onPageChange={this.handlePageChange}
-            currentPage={currentPage}
-          />
-        </div>
+            <TypesTable
+              types={types}
+              sortColumn={sortColumn}
+              onDelete={this.handleDelete}
+              onUpdate={this.handleUpdate}
+              onSort={this.handleSort}
+              onStatusUpdate={this.handleUpdateStatus}
+            />
+            <Pagination
+              itemsCount={totalCount}
+              pageSize={pageSize}
+              onPageChange={this.handlePageChange}
+              currentPage={currentPage}
+            />
+          </div>
+        </center>
       </BlockUi>
     );
   }
